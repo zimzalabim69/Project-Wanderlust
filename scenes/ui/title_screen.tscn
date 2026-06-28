@@ -1,0 +1,90 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4mtitle_screen"]
+
+[ext_resource type="Script" path="res://scenes/ui/title_screen.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="SnowMaterial"]
+emission_shape = 3
+emission_box_extents = Vector3(320, 1, 1)
+gravity = Vector3(0, 15, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 20.0
+scale_min = 0.5
+scale_max = 2.0
+
+[node name="TitleScreen" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0.04, 0.08, 1)
+
+[node name="SnowParticles" type="GPUParticles2D" parent="."]
+position = Vector2(320, -10)
+amount = 150
+process_material = SubResource("SnowMaterial")
+lifetime = 5.0
+preprocess = 5.0
+visibility_rect = Rect2(-320, -10, 640, 500)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainVBox" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/MainVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "PROJECT WANDERLUST"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/MainVBox"]
+layout_mode = 2
+text = "A first-person exploration"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/MainVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="ButtonVBox" type="VBoxContainer" parent="CenterContainer/MainVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NewGameButton" type="Button" parent="CenterContainer/MainVBox/ButtonVBox"]
+layout_mode = 2
+text = "New Game"
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/MainVBox/ButtonVBox"]
+layout_mode = 2
+text = "Continue"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/MainVBox/ButtonVBox"]
+layout_mode = 2
+text = "Quit"
+
+[node name="ControlsLabel" type="Label" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -28.0
+offset_right = 300.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "WASD to move | Mouse to look | E to interact | F for flashlight | Tab for inventory"
+horizontal_alignment = 1

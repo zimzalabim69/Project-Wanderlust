@@ -1,0 +1,33 @@
+# Godot-specific temporary files and build caches
+.import/
+.godot/
+*.uid
+*.import
+export_presets.cfg
+
+# Obsidian-specific settings and caches
+.obsidian/
+Project Wanderlust/.obsidian/
+
+# VS Code and system files
+.vscode/
+Project Wanderlust/.vscode/
+.DS_Store
+Thumbs.db
+
+# Build outputs
+build/
+bin/
+!addons/terrain_3d/bin/
+*.exe
+
+# Terrain3D install artifacts (addon itself is committed under addons/terrain_3d)
+_terrain3d_dl/
+_terrain3d_extract/
+terrain3d*.zip
+*.zip
+_git_log.txt
+
+# Bake logs
+_bake_log.txt
+_bake_full.log

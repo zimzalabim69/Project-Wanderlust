@@ -1,0 +1,15 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+Vulkan 1.4.312 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce GTX 980
+
+SCRIPT ERROR: Parse Error: Cannot get return value of call to "save_directory()" because it returns "void".
+   at: GDScript::reload (res://core/terrain/terrain_bake_runner.gd:27)
+SCRIPT ERROR: Parse Error: Cannot assign a value of type null to variable "err" with specified type Error.
+   at: GDScript::reload (res://core/terrain/terrain_bake_runner.gd:27)
+ERROR: Failed to load script "res://core/terrain/terrain_bake_runner.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript.cpp:2907)
+ERROR: Error opening file 'res://icon.svg'.
+   at: load_image (core/io/image_loader.cpp:89)
+WARNING: instance_reset_physics_interpolation() is deprecated.
+   at: _instance_reset_physics_interpolation_bind_compat_104269 (servers/rendering/rendering_server.compat.inc:58)
+ERROR: Terrain3D#9523:_grab_camera:155: Cannot find the active camera. Set it manually with Terrain3D.set_camera(). Stopping _physics_process()
+   at: push_error (core/variant/variant_utility.cpp:1024)

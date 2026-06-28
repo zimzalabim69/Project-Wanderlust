@@ -1,0 +1,173 @@
+[gd_scene load_steps=2 format=3 uid="uid://editorpanel_wl01"]
+
+[ext_resource type="Script" path="res://ui/editor_panel.gd" id="1_script"]
+
+[node name="EditorPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 280.0
+offset_bottom = 0.0
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Level Editor"
+horizontal_alignment = 1
+
+[node name="ToolLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "Tool: None"
+
+[node name="InfoLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "F8 toggle | Tab cycle | L-Click place"
+
+[node name="HSep" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="Tabs" type="TabContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Place" type="Control" parent="Panel/VBox/Tabs"]
+layout_mode = 2
+
+[node name="PlaceVBox" type="VBoxContainer" parent="Panel/VBox/Tabs/Place"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Label" type="Label" parent="Panel/VBox/Tabs/Place/PlaceVBox"]
+layout_mode = 2
+text = "Prefab Palette"
+
+[node name="PrefabList" type="ItemList" parent="Panel/VBox/Tabs/Place/PlaceVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+select_mode = 1
+
+[node name="Terrain" type="Control" parent="Panel/VBox/Tabs"]
+layout_mode = 2
+
+[node name="TerrainVBox" type="VBoxContainer" parent="Panel/VBox/Tabs/Terrain"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Label" type="Label" parent="Panel/VBox/Tabs/Terrain/TerrainVBox"]
+layout_mode = 2
+text = "Terrain Sculpt"
+autowrap_mode = 2
+
+[node name="Info" type="Label" parent="Panel/VBox/Tabs/Terrain/TerrainVBox"]
+layout_mode = 2
+text = "Requires Terrain3D node.\nL-Click: raise\nR-Click: lower"
+autowrap_mode = 2
+
+[node name="Spawn" type="Control" parent="Panel/VBox/Tabs"]
+layout_mode = 2
+
+[node name="SpawnVBox" type="VBoxContainer" parent="Panel/VBox/Tabs/Spawn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Label" type="Label" parent="Panel/VBox/Tabs/Spawn/SpawnVBox"]
+layout_mode = 2
+text = "Spawn / Zones"
+
+[node name="Info" type="Label" parent="Panel/VBox/Tabs/Spawn/SpawnVBox"]
+layout_mode = 2
+text = "Coming soon: place spawn points, scene exits, audio zones."
+autowrap_mode = 2
+
+[node name="Select" type="Control" parent="Panel/VBox/Tabs"]
+layout_mode = 2
+
+[node name="SelectVBox" type="VBoxContainer" parent="Panel/VBox/Tabs/Select"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Label" type="Label" parent="Panel/VBox/Tabs/Select/SelectVBox"]
+layout_mode = 2
+text = "Select / Delete"
+
+[node name="Info" type="Label" parent="Panel/VBox/Tabs/Select/SelectVBox"]
+layout_mode = 2
+text = "L-Click: select object\nR-Click: delete object\nTab to return to Place"
+autowrap_mode = 2
+
+[node name="Save" type="Control" parent="Panel/VBox/Tabs"]
+layout_mode = 2
+
+[node name="SaveVBox" type="VBoxContainer" parent="Panel/VBox/Tabs/Save"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Label" type="Label" parent="Panel/VBox/Tabs/Save/SaveVBox"]
+layout_mode = 2
+text = "Save / Load Layout"
+
+[node name="SaveName" type="LineEdit" parent="Panel/VBox/Tabs/Save/SaveVBox"]
+layout_mode = 2
+placeholder_text = "Save name (blank = auto)"
+
+[node name="SaveButton" type="Button" parent="Panel/VBox/Tabs/Save/SaveVBox"]
+layout_mode = 2
+text = "Save Layout"
+
+[node name="LoadName" type="LineEdit" parent="Panel/VBox/Tabs/Save/SaveVBox"]
+layout_mode = 2
+placeholder_text = "Load name (blank = auto)"
+
+[node name="LoadButton" type="Button" parent="Panel/VBox/Tabs/Save/SaveVBox"]
+layout_mode = 2
+text = "Load Layout"

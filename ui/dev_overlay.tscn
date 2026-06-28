@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://devoverlay_wl01"]
+
+[ext_resource type="Script" path="res://ui/dev_overlay.gd" id="1_script"]
+
+[node name="DevOverlay" type="CanvasLayer"]
+layer = 94
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="FPSLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "FPS: --"
+
+[node name="PosLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "POS: --"
+
+[node name="SceneLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "SCENE: --"
+
+[node name="NoclipLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "NOCLIP: OFF | FREECAM: OFF"
+
+[node name="FlagsLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "FLAGS: --"
+
+[node name="InvLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "INV: --"

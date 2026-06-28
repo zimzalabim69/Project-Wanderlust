@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://devconsole_wl01"]
+
+[ext_resource type="Script" path="res://core/autoload/dev_console.gd" id="1_script"]
+
+[node name="DevConsole" type="CanvasLayer"]
+layer = 95
+script = ExtResource("1_script")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 300.0
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="Output" type="RichTextLabel" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+autowrap_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="Prompt" type="Label" parent="Panel/VBox/HBox"]
+layout_mode = 2
+text = "> "
+
+[node name="Input" type="LineEdit" parent="Panel/VBox/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Type command..."
+clear_button_enabled = true

@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://collectible_note"]
+
+[ext_resource type="Script" path="res://core/components/collectible.gd" id="1_collectible"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.3, 0.02, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(0.3, 0.02, 0.4)
+
+[node name="Note" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_collectible")
+prompt_text = "Pick up note"
+item_id = "note_basement_1"
+title = "Basement Note"
+text = "A crumpled note left on the workbench. It reads: 'Went to town for supplies. Back by dark. —M.'"
+world_flag = "found_basement_note"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_1")
+surface_override_material/0 = null

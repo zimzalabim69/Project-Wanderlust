@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://terrain_bake_runner01"]
+
+[ext_resource type="Script" path="res://core/terrain/terrain_bake_runner.gd" id="1_runner"]
+[ext_resource type="Terrain3DAssets" path="res://resources/terrain/town_terrain_assets.tres" id="2_assets"]
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_bake"]
+_shader_parameters = {
+"auto_base_texture": 0,
+"auto_overlay_texture": 1,
+"auto_slope": 0.85,
+"blend_sharpness": 0.75,
+"height_blending": true,
+"macro_variation1": Color(0.75, 0.78, 0.82, 1),
+"macro_variation2": Color(0.65, 0.68, 0.72, 1),
+"world_noise_height": 8.0,
+"world_noise_scale": 5.0
+}
+world_background = 2
+auto_shader = true
+
+[node name="TerrainBakeRunner" type="Node3D"]
+script = ExtResource("1_runner")
+
+[node name="Terrain3D" type="Terrain3D" parent="."]
+data_directory = "res://assets/terrain/town/data"
+material = SubResource("Terrain3DMaterial_bake")
+assets = ExtResource("2_assets")

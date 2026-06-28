@@ -1,0 +1,182 @@
+[gd_scene format=3 uid="uid://t2town5678p"]
+
+[ext_resource type="PackedScene" uid="uid://b2r8x4k6y8j1p" path="res://scenes/player.tscn" id="1_player"]
+[ext_resource type="Script" uid="uid://dm3o3yxudwt8b" path="res://core/components/level_root.gd" id="2_level_root"]
+[ext_resource type="Resource" path="res://resources/levels/town.tres" id="3_level_config"]
+[ext_resource type="Script" uid="uid://c37xjxn0ruinw" path="res://core/components/spawn_point.gd" id="5_spawn_point"]
+[ext_resource type="Script" uid="uid://vynqrvni0lg7" path="res://core/components/audio_zone.gd" id="6_audio_zone"]
+[ext_resource type="Terrain3DAssets" uid="uid://bs0k8t5cmhy7j" path="res://resources/terrain/town_terrain_assets.tres" id="7_terrain_assets"]
+[ext_resource type="PackedScene" path="res://scenes/terrain/town_snow_ground.tscn" id="8_snow_ground"]
+
+[sub_resource type="Environment" id="Environment_cozy_fog"]
+background_mode = 1
+background_color = Color(0.121569, 0.141176, 0.180392, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.180392, 0.2, 0.25098, 1)
+ambient_light_energy = 0.4
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.06
+volumetric_fog_albedo = Color(0.156863, 0.184314, 0.223529, 1)
+
+[sub_resource type="Gradient" id="Gradient_cq4yp"]
+offsets = PackedFloat32Array(0.2, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_yn4qk"]
+noise_type = 2
+frequency = 0.03
+cellular_jitter = 3.0
+cellular_return_type = 0
+domain_warp_enabled = true
+domain_warp_type = 1
+domain_warp_amplitude = 50.0
+domain_warp_fractal_type = 2
+domain_warp_fractal_lacunarity = 1.5
+domain_warp_fractal_gain = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_v3ani"]
+noise = SubResource("FastNoiseLite_yn4qk")
+color_ramp = SubResource("Gradient_cq4yp")
+seamless = true
+
+[sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_town"]
+_shader_parameters = {
+"auto_base_texture": 0,
+&"auto_height_reduction": null,
+"auto_overlay_texture": 1,
+"auto_slope": 0.85,
+&"bias_distance": null,
+"blend_sharpness": 0.75,
+&"depth_blur": null,
+&"enable_macro_variation": null,
+&"enable_projection": null,
+&"flat_terrain_normals": null,
+"macro_variation1": Color(0.75, 0.78, 0.82, 1),
+"macro_variation2": Color(0.65, 0.68, 0.72, 1),
+&"macro_variation_slope": null,
+&"mipmap_bias": null,
+&"noise1_angle": null,
+&"noise1_offset": null,
+&"noise1_scale": null,
+&"noise2_scale": null,
+&"noise_texture": SubResource("NoiseTexture2D_v3ani"),
+&"projection_threshold": null,
+&"world_noise_fragment_normals": null,
+"world_noise_height": 8.0,
+&"world_noise_lod_distance": null,
+&"world_noise_max_octaves": null,
+&"world_noise_min_octaves": null,
+&"world_noise_offset": null,
+&"world_noise_region_blend": null,
+"world_noise_scale": 5.0
+}
+world_background = 2
+auto_shader = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_house"]
+albedo_color = Color(0.55, 0.5, 0.45, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_house"]
+material = SubResource("StandardMaterial3D_house")
+size = Vector3(6, 4, 5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_house_col"]
+size = Vector3(6, 4, 5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_shed"]
+albedo_color = Color(0.4, 0.35, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_shed"]
+material = SubResource("StandardMaterial3D_shed")
+size = Vector3(3, 2.5, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shed_col"]
+size = Vector3(3, 2.5, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_outdoor_zone"]
+size = Vector3(512, 40, 512)
+
+[node name="Town" type="Node3D" unique_id=1490391727]
+script = ExtResource("2_level_root")
+level_config = ExtResource("3_level_config")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=493365827]
+environment = SubResource("Environment_cozy_fog")
+
+[node name="Terrain" type="Node3D" parent="." unique_id=391924820]
+
+[node name="TownSnowGround" parent="Terrain" unique_id=685240222 instance=ExtResource("8_snow_ground")]
+
+[node name="Terrain3D" type="Terrain3D" parent="Terrain" unique_id=1361706119]
+data_directory = "res://assets/terrain/town/data"
+material = SubResource("Terrain3DMaterial_town")
+assets = ExtResource("7_terrain_assets")
+top_level = true
+visible = false
+metadata/_edit_lock_ = true
+
+[node name="Structures" type="Node3D" parent="." unique_id=974649431]
+
+[node name="House1" type="StaticBody3D" parent="Structures" unique_id=322140397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2, -20)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Structures/House1" unique_id=135116152]
+mesh = SubResource("BoxMesh_house")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/House1" unique_id=1798185462]
+shape = SubResource("BoxShape3D_house_col")
+
+[node name="Shed1" type="StaticBody3D" parent="Structures" unique_id=1892961034]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 1.25, 15)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Structures/Shed1" unique_id=1124156482]
+mesh = SubResource("BoxMesh_shed")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/Shed1" unique_id=1560446237]
+shape = SubResource("BoxShape3D_shed_col")
+
+[node name="Props" type="Node3D" parent="." unique_id=1736444961]
+
+[node name="Vehicles" type="Node3D" parent="." unique_id=1174930475]
+
+[node name="Lighting" type="Node3D" parent="." unique_id=808987093]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Lighting" unique_id=138521648]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 20, 0)
+light_color = Color(0.501961, 0.584314, 0.690196, 1)
+light_energy = 0.3
+shadow_enabled = true
+
+[node name="AudioZones" type="Node3D" parent="." unique_id=19958792]
+
+[node name="OutdoorMix" type="Area3D" parent="AudioZones" unique_id=1852713419]
+script = ExtResource("6_audio_zone")
+outdoor_mix = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AudioZones/OutdoorMix" unique_id=1877508339]
+shape = SubResource("BoxShape3D_outdoor_zone")
+
+[node name="SpawnPoints" type="Node3D" parent="." unique_id=1410323565]
+
+[node name="SpawnDefault" type="Marker3D" parent="SpawnPoints" unique_id=4154370]
+script = ExtResource("5_spawn_point")
+
+[node name="SpawnFromBasement" type="Marker3D" parent="SpawnPoints" unique_id=3976115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+script = ExtResource("5_spawn_point")
+spawn_id = "from_basement"
+
+[node name="SpawnFromFrontDoor" type="Marker3D" parent="SpawnPoints" unique_id=3976116]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -20)
+script = ExtResource("5_spawn_point")
+spawn_id = "from_front_door"
+
+[node name="SpawnFromBackDoor" type="Marker3D" parent="SpawnPoints" unique_id=3976117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 15)
+script = ExtResource("5_spawn_point")
+spawn_id = "from_back_door"
+
+[node name="Triggers" type="Node3D" parent="." unique_id=967679486]
+
+[node name="Player" parent="." unique_id=464701860 instance=ExtResource("1_player")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 12.04398, 44.750366)

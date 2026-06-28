@@ -1,0 +1,159 @@
+[gd_scene load_steps=10 format=3 uid="uid://basement_shell_wl01"]
+
+[ext_resource type="Material" path="res://assets/materials/basement_floor.tres" id="1_floor_mat"]
+[ext_resource type="Material" path="res://assets/materials/basement_wall.tres" id="2_wall_mat"]
+[ext_resource type="Material" path="res://assets/materials/basement_ceiling.tres" id="3_ceiling_mat"]
+[ext_resource type="Material" path="res://assets/materials/basement_trim.tres" id="4_trim_mat"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+size = Vector3(8.4, 0.2, 10.4)
+material = ExtResource("1_floor_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(8.4, 0.2, 10.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ceiling"]
+size = Vector3(8.4, 0.15, 10.4)
+material = ExtResource("3_ceiling_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ceiling"]
+size = Vector3(8.4, 0.15, 10.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(0.2, 2.35, 10.4)
+material = ExtResource("2_wall_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall"]
+size = Vector3(0.2, 2.35, 10.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_short"]
+size = Vector3(8.4, 2.35, 0.2)
+material = ExtResource("2_wall_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_short"]
+size = Vector3(8.4, 2.35, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall_panel"]
+size = Vector3(3.5, 2.35, 0.2)
+material = ExtResource("2_wall_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_panel"]
+size = Vector3(3.5, 2.35, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lintel"]
+size = Vector3(1.4, 0.25, 0.2)
+material = ExtResource("4_trim_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lintel"]
+size = Vector3(1.4, 0.25, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_step"]
+size = Vector3(1.6, 0.18, 0.45)
+material = ExtResource("4_trim_mat")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_step"]
+size = Vector3(1.6, 0.18, 0.45)
+
+[sub_resource type="BoxMesh" id="BoxMesh_bulb"]
+size = Vector3(0.12, 0.08, 0.12)
+material = ExtResource("4_trim_mat")
+
+[node name="BasementShell" type="Node3D"]
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("BoxMesh_floor")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.425, 0)
+mesh = SubResource("BoxMesh_ceiling")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Ceiling"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ceiling/StaticBody3D"]
+shape = SubResource("BoxShape3D_ceiling")
+
+[node name="WallWest" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1, 1.175, 0)
+mesh = SubResource("BoxMesh_wall")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallWest"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallWest/StaticBody3D"]
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallEast" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.1, 1.175, 0)
+mesh = SubResource("BoxMesh_wall")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallEast"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallEast/StaticBody3D"]
+shape = SubResource("BoxShape3D_wall")
+
+[node name="WallSouth" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.175, -5.1)
+mesh = SubResource("BoxMesh_wall_short")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallSouth"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallSouth/StaticBody3D"]
+shape = SubResource("BoxShape3D_wall_short")
+
+[node name="WallNorthLeft" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.45, 1.175, 5.1)
+mesh = SubResource("BoxMesh_wall_panel")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallNorthLeft"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallNorthLeft/StaticBody3D"]
+shape = SubResource("BoxShape3D_wall_panel")
+
+[node name="WallNorthRight" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.45, 1.175, 5.1)
+mesh = SubResource("BoxMesh_wall_panel")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallNorthRight"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WallNorthRight/StaticBody3D"]
+shape = SubResource("BoxShape3D_wall_panel")
+
+[node name="DoorLintel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.225, 5.1)
+mesh = SubResource("BoxMesh_lintel")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="DoorLintel"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorLintel/StaticBody3D"]
+shape = SubResource("BoxShape3D_lintel")
+
+[node name="Stairs" type="Node3D" parent="."]
+
+[node name="Step1" type="MeshInstance3D" parent="Stairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 3.35)
+mesh = SubResource("BoxMesh_step")
+
+[node name="Step2" type="MeshInstance3D" parent="Stairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27, 3.85)
+mesh = SubResource("BoxMesh_step")
+
+[node name="Step3" type="MeshInstance3D" parent="Stairs"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 4.35)
+mesh = SubResource("BoxMesh_step")
+
+[node name="CeilingLight" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32, 0)
+
+[node name="Bulb" type="MeshInstance3D" parent="CeilingLight"]
+mesh = SubResource("BoxMesh_bulb")
+
+[node name="Light" type="OmniLight3D" parent="CeilingLight"]
+light_color = Color(1, 0.9, 0.72, 1)
+light_energy = 1.35
+omni_range = 9.0
+shadow_enabled = true

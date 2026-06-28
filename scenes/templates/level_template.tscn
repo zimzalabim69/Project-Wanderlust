@@ -1,0 +1,47 @@
+[gd_scene load_steps=7 format=3 uid="uid://level_template_wanderlust"]
+
+[ext_resource type="Script" path="res://core/components/level_root.gd" id="1_level_root"]
+[ext_resource type="Script" path="res://core/terrain/terrain_slot.gd" id="2_terrain_slot"]
+[ext_resource type="Script" path="res://core/components/spawn_point.gd" id="3_spawn_point"]
+[ext_resource type="Script" path="res://core/components/audio_zone.gd" id="4_audio_zone"]
+[ext_resource type="PackedScene" uid="uid://b2r8x4k6y8j1p" path="res://scenes/player.tscn" id="5_player"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_audio_zone"]
+size = Vector3(50, 8, 50)
+
+[node name="LevelTemplate" type="Node3D"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+script = ExtResource("1_level_root")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="Terrain" type="Node3D" parent="."]
+script = ExtResource("2_terrain_slot")
+
+[node name="Structures" type="Node3D" parent="."]
+
+[node name="Props" type="Node3D" parent="."]
+
+[node name="Vehicles" type="Node3D" parent="."]
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="AudioZones" type="Node3D" parent="."]
+
+[node name="DefaultMixZone" type="Area3D" parent="AudioZones"]
+script = ExtResource("4_audio_zone")
+outdoor_mix = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AudioZones/DefaultMixZone"]
+shape = SubResource("BoxShape3D_audio_zone")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SpawnDefault" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
+script = ExtResource("3_spawn_point")
+
+[node name="Triggers" type="Node3D" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("5_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
