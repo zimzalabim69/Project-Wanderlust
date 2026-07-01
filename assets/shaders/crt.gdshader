@@ -41,6 +41,10 @@ uniform float brightness : hint_range(0.5, 1.5, 0.01) = 1.05;
 // Time is supplied by Godot automatically — used for grain animation.
 uniform float time_offset : hint_range(0.0, 1000.0) = 0.0;
 
+// Screen texture — the rendered 3D scene underneath this ColorRect.
+// Godot 4: hint_screen_texture samples the backbuffer at this pixel's position.
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
+
 
 // --- Helpers ---
 
@@ -61,24 +65,21 @@ vec2 barrel(vec2 uv) {
 
 
 void fragment() {
-	// 1. Barrel / lens distortion.
+	// 1. Barrel / lens distortion (applied to UV for scanline/grain coords).
 	vec2 uv = barrel(UV);
-
-	// Clip pixels that land outside the curved screen area.
-	if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-		COLOR = vec4(0.0, 0.0, 0.0, 1.0);
-		return;
-	}
 
 	// 2. Chromatic aberration — shift R and B channels outward from centre.
 	vec2 dir = uv - 0.5;
 	float dist = length(dir);
 	vec2 aberr_offset = normalize(dir + vec2(0.0001)) * dist * aberration_strength;
 
-	float r = texture(TEXTURE, uv + aberr_offset).r;
-	float g = texture(TEXTURE, uv).g;
-	float b = texture(TEXTURE, uv - aberr_offset).b;
-	float a = texture(TEXTURE, uv).a;
+	// Sample the backbuffer (rendered 3D scene) rather than the ColorRect's own
+	// texture. SCREEN_UV gives the pixel's position in screen space [0..1].
+	vec2 screen_uv = SCREEN_UV;
+	float r = texture(screen_texture, screen_uv + aberr_offset).r;
+	float g = texture(screen_texture, screen_uv).g;
+	float b = texture(screen_texture, screen_uv - aberr_offset).b;
+	float a = texture(screen_texture, screen_uv).a;
 
 	vec3 color = vec3(r, g, b);
 

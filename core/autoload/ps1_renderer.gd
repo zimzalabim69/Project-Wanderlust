@@ -74,13 +74,24 @@ func _apply_to_tree() -> void:
 
 
 func _on_node_added(node: Node) -> void:
-	# Called for every newly added node — only act on MeshInstance3D.
-	if node is MeshInstance3D:
-		call_deferred("_apply_to_mesh", node as MeshInstance3D)
+	# Called for every newly added node — only act on 3D MeshInstance3D,
+	# not UI meshes inside CanvasLayer / SubViewport trees.
+	if not node is MeshInstance3D:
+		return
+	var p: Node = node.get_parent()
+	while p != null:
+		if p is CanvasLayer or p is SubViewport:
+			return
+		p = p.get_parent()
+	call_deferred("_apply_to_mesh", node as MeshInstance3D)
 
 
 func _recurse(node: Node) -> void:
 	if node == null:
+		return
+	# Skip CanvasLayer and SubViewport trees — those are UI / 2D space and
+	# have no 3D geometry that should receive the PS1 shader.
+	if node is CanvasLayer or node is SubViewport:
 		return
 	if node is MeshInstance3D:
 		_apply_to_mesh(node as MeshInstance3D)

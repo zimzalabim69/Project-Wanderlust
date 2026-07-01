@@ -116,7 +116,7 @@ collision_mask = 2
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
 shape = SubResource("Col_casing")
 
-[node name="TVInteractable" type="Node" parent="."]
+[node name="TVInteractable" type="Node3D" parent="."]
 script = ExtResource("1_readable")
 prompt_text = "Look at TV"
 title = "Television"
