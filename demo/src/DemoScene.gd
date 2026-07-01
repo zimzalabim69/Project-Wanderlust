@@ -15,16 +15,19 @@ const SNOW_PARENT_PATH: NodePath = ^"../Snowfall"  # relative to DemoScene root
 
 func _ready() -> void:
 	# Sky3D addon integration (editor only).
-	if Engine.is_editor_hint() and has_node("Environment") and \
-		Engine.get_singleton(&"EditorInterface").is_plugin_enabled("sky_3d"):
-			$Environment.queue_free()
-			var sky3d: Node = load("res://addons/sky_3d/src/Sky3D.gd").new()
-			sky3d.name = "Sky3D"
-			add_child(sky3d, true)
-			move_child(sky3d, 1)
-			sky3d.owner = self
-			sky3d.current_time = 10
-			sky3d.enable_editor_time = false
+	# Guarded with has_singleton() so this never crashes at runtime.
+	if Engine.is_editor_hint():
+		if has_node("Environment") and Engine.has_singleton(&"EditorInterface"):
+			var ei: Object = Engine.get_singleton(&"EditorInterface")
+			if ei.has_method("is_plugin_enabled") and ei.call("is_plugin_enabled", "sky_3d"):
+				$Environment.queue_free()
+				var sky3d: Node = load("res://addons/sky_3d/src/Sky3D.gd").new()
+				sky3d.name = "Sky3D"
+				add_child(sky3d, true)
+				move_child(sky3d, 1)
+				sky3d.owner = self
+				sky3d.current_time = 10
+				sky3d.enable_editor_time = false
 		return  # Don't run runtime logic in editor.
 
 	# Terrain3D needs one physics frame to initialise its collision before we
@@ -32,6 +35,7 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	_snap_spawn_points_to_terrain()
 	_attach_snow_to_player()
+	_tag_terrain_surface()
 
 
 ## Reads each SpawnPoint's XZ position, queries Terrain3D for the actual height,
@@ -53,6 +57,24 @@ func _snap_spawn_points_to_terrain() -> void:
 		var terrain_y: float = terrain.get_height(Vector2(pos.x, pos.z))
 		if terrain_y > -9999.0:  # Terrain3D returns -INF for out-of-bounds.
 			marker.global_position = Vector3(pos.x, terrain_y + SPAWN_Y_OFFSET, pos.z)
+
+
+## Adds the surface_snow group to the Terrain3D collision body so the player
+## footstep system can identify the surface type (snow = outdoor terrain).
+func _tag_terrain_surface() -> void:
+	if terrain == null:
+		return
+	# Terrain3D exposes its StaticBody3D via get_collision_static().
+	# Fall back to searching children if the method isn't present.
+	if terrain.has_method("get_collision_static"):
+		var body: Node = terrain.call("get_collision_static")
+		if body != null:
+			body.add_to_group("surface_snow")
+			return
+	# Fallback: tag any StaticBody3D child of the Terrain3D node.
+	for child: Node in terrain.get_children():
+		if child is StaticBody3D:
+			child.add_to_group("surface_snow")
 
 
 ## Re-parents the Snowfall GPUParticles3D nodes to the player so snow always

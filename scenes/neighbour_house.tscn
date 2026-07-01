@@ -1,0 +1,530 @@
+[gd_scene load_steps=50 format=3 uid="uid://neighbour_house_wl01"]
+
+[ext_resource type="Script" path="res://core/components/level_root.gd" id="1_level"]
+[ext_resource type="PackedScene" uid="uid://b2r8x4k6y8j1p" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://core/components/spawn_point.gd" id="3_spawn"]
+[ext_resource type="Script" path="res://core/components/scene_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://core/components/audio_zone.gd" id="5_audio"]
+[ext_resource type="Script" path="res://core/components/collectible.gd" id="6_collectible"]
+[ext_resource type="Script" path="res://core/components/readable.gd" id="7_readable"]
+[ext_resource type="Script" path="res://core/components/flicker_light.gd" id="8_flicker"]
+[ext_resource type="Resource" path="res://resources/levels/neighbour_house.tres" id="9_config"]
+
+; --- Materials ---
+
+[sub_resource type="Environment" id="Env_neighbour"]
+background_mode = 1
+background_color = Color(0.12, 0.10, 0.09, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.45, 0.40, 0.35, 1)
+ambient_light_energy = 0.35
+tonemap_mode = 2
+tonemap_exposure = 1.0
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor_wood"]
+albedo_color = Color(0.38, 0.28, 0.18, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor_linoleum"]
+albedo_color = Color(0.62, 0.58, 0.50, 1)
+roughness = 0.85
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_wall"]
+albedo_color = Color(0.78, 0.74, 0.68, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_wallpaper"]
+; Faded green floral wallpaper — very 1970s, slightly peeling feel
+albedo_color = Color(0.52, 0.60, 0.48, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_trim"]
+albedo_color = Color(0.88, 0.86, 0.82, 1)
+roughness = 0.7
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_door"]
+albedo_color = Color(0.40, 0.30, 0.20, 1)
+roughness = 0.75
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_furniture_dark"]
+albedo_color = Color(0.22, 0.16, 0.10, 1)
+roughness = 0.8
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_furniture_mid"]
+albedo_color = Color(0.45, 0.38, 0.28, 1)
+roughness = 0.85
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_upholstery"]
+; Dusty blue-green sofa fabric
+albedo_color = Color(0.30, 0.38, 0.42, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_paper"]
+albedo_color = Color(0.88, 0.84, 0.72, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_kitchen_tile"]
+albedo_color = Color(0.82, 0.78, 0.72, 1)
+roughness = 0.6
+metallic = 0.05
+texture_filter = 0
+
+; --- Collision shapes ---
+
+; Living room floor (10x9)
+[sub_resource type="BoxShape3D" id="Col_floor_living"]
+size = Vector3(10, 0.2, 9)
+
+[sub_resource type="BoxMesh" id="Mesh_floor_living"]
+size = Vector3(10, 0.2, 9)
+material = SubResource("Mat_floor_wood")
+
+; Kitchen floor (5x9)
+[sub_resource type="BoxShape3D" id="Col_floor_kitchen"]
+size = Vector3(5, 0.2, 9)
+
+[sub_resource type="BoxMesh" id="Mesh_floor_kitchen"]
+size = Vector3(5, 0.2, 9)
+material = SubResource("Mat_floor_linoleum")
+
+; Ceiling (15x9 — spans both rooms)
+[sub_resource type="BoxMesh" id="Mesh_ceiling"]
+size = Vector3(15, 0.15, 9)
+material = SubResource("Mat_trim")
+
+; Walls — long axis (15m wide house)
+[sub_resource type="BoxShape3D" id="Col_wall_long"]
+size = Vector3(15, 3, 0.2)
+
+[sub_resource type="BoxMesh" id="Mesh_wall_long"]
+size = Vector3(15, 3, 0.2)
+material = SubResource("Mat_wallpaper")
+
+; Walls — short axis (9m deep)
+[sub_resource type="BoxShape3D" id="Col_wall_short"]
+size = Vector3(0.2, 3, 9)
+
+[sub_resource type="BoxMesh" id="Mesh_wall_short"]
+size = Vector3(0.2, 3, 9)
+material = SubResource("Mat_wall")
+
+; Room divider wall (partial, with doorway gap)
+[sub_resource type="BoxShape3D" id="Col_divider"]
+size = Vector3(0.2, 3, 3.5)
+
+[sub_resource type="BoxMesh" id="Mesh_divider"]
+size = Vector3(0.2, 3, 3.5)
+material = SubResource("Mat_wall")
+
+; Exit door shape
+[sub_resource type="BoxShape3D" id="Col_door"]
+size = Vector3(1.4, 2.2, 0.2)
+
+[sub_resource type="BoxMesh" id="Mesh_door"]
+size = Vector3(1.4, 2.2, 0.2)
+material = SubResource("Mat_door")
+
+[sub_resource type="BoxShape3D" id="Col_exit_trigger"]
+size = Vector3(1.6, 2.2, 0.4)
+
+; Indoor audio zone
+[sub_resource type="BoxShape3D" id="Col_indoor_audio"]
+size = Vector3(15, 4, 9)
+
+; Sofa (1.8 x 0.8 x 0.85 tall)
+[sub_resource type="BoxShape3D" id="Col_sofa"]
+size = Vector3(1.8, 0.85, 0.8)
+
+[sub_resource type="BoxMesh" id="Mesh_sofa_seat"]
+size = Vector3(1.8, 0.45, 0.8)
+material = SubResource("Mat_upholstery")
+
+[sub_resource type="BoxMesh" id="Mesh_sofa_back"]
+size = Vector3(1.8, 0.5, 0.2)
+material = SubResource("Mat_upholstery")
+
+; Coffee table
+[sub_resource type="BoxShape3D" id="Col_table_coffee"]
+size = Vector3(0.9, 0.45, 0.5)
+
+[sub_resource type="BoxMesh" id="Mesh_table_coffee"]
+size = Vector3(0.9, 0.45, 0.5)
+material = SubResource("Mat_furniture_dark")
+
+; Bookshelf (against east wall)
+[sub_resource type="BoxShape3D" id="Col_bookshelf"]
+size = Vector3(0.3, 2.2, 1.2)
+
+[sub_resource type="BoxMesh" id="Mesh_bookshelf"]
+size = Vector3(0.3, 2.2, 1.2)
+material = SubResource("Mat_furniture_dark")
+
+; Kitchen counter
+[sub_resource type="BoxShape3D" id="Col_counter"]
+size = Vector3(4, 0.9, 0.6)
+
+[sub_resource type="BoxMesh" id="Mesh_counter"]
+size = Vector3(4, 0.9, 0.6)
+material = SubResource("Mat_furniture_mid")
+
+; Kitchen counter top
+[sub_resource type="BoxMesh" id="Mesh_counter_top"]
+size = Vector3(4, 0.05, 0.6)
+material = SubResource("Mat_kitchen_tile")
+
+; Readable note shape
+[sub_resource type="BoxShape3D" id="Col_note"]
+size = Vector3(0.3, 0.02, 0.4)
+
+[sub_resource type="BoxMesh" id="Mesh_note"]
+size = Vector3(0.3, 0.02, 0.4)
+material = SubResource("Mat_paper")
+
+; ============================================================
+; SCENE TREE
+; ============================================================
+
+[node name="NeighbourHouse" type="Node3D"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+script = ExtResource("1_level")
+level_config = ExtResource("9_config")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_neighbour")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.5, -0.707, 0.5, 0, 0.707, 0.707, -0.866, -0.354, 0.354, 0, 4, 0)
+light_color = Color(0.7, 0.75, 0.9, 1)
+light_energy = 0.1
+shadow_enabled = false
+
+; ---- Terrain (empty — indoor scene) ----
+[node name="Terrain" type="Node3D" parent="."]
+
+[node name="Vehicles" type="Node3D" parent="."]
+
+; ---- Structures (walls, floors, ceiling) ----
+[node name="Structures" type="Node3D" parent="."]
+
+; Living room floor
+[node name="FloorLiving" type="StaticBody3D" parent="Structures"]
+collision_layer = 5
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/FloorLiving"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.1, 0)
+mesh = SubResource("Mesh_floor_living")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/FloorLiving"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.1, 0)
+shape = SubResource("Col_floor_living")
+
+; Kitchen floor
+[node name="FloorKitchen" type="StaticBody3D" parent="Structures"]
+collision_layer = 1
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/FloorKitchen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -0.1, 0)
+mesh = SubResource("Mesh_floor_kitchen")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/FloorKitchen"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -0.1, 0)
+shape = SubResource("Col_floor_kitchen")
+
+; Ceiling
+[node name="Ceiling" type="MeshInstance3D" parent="Structures"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.0, 0)
+mesh = SubResource("Mesh_ceiling")
+
+; North wall (back of house — wallpapered)
+[node name="WallNorth" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/WallNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4.5)
+mesh = SubResource("Mesh_wall_long")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/WallNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4.5)
+shape = SubResource("Col_wall_long")
+
+; South wall (front — has front door)
+[node name="WallSouth" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/WallSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4.5)
+mesh = SubResource("Mesh_wall_long")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/WallSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4.5)
+shape = SubResource("Col_wall_long")
+
+; West wall (left side — living room outer)
+[node name="WallWest" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/WallWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 1.5, 0)
+mesh = SubResource("Mesh_wall_short")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/WallWest"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 1.5, 0)
+shape = SubResource("Col_wall_short")
+
+; East wall (right side — kitchen outer)
+[node name="WallEast" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/WallEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.5, 0)
+mesh = SubResource("Mesh_wall_short")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/WallEast"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.5, 0)
+shape = SubResource("Col_wall_short")
+
+; Room divider — upper half (above doorway, north side)
+[node name="DividerNorth" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/DividerNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, -3.25)
+mesh = SubResource("Mesh_divider")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/DividerNorth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, -3.25)
+shape = SubResource("Col_divider")
+
+; Room divider — lower half (south side of doorway)
+[node name="DividerSouth" type="StaticBody3D" parent="Structures"]
+
+[node name="Mesh" type="MeshInstance3D" parent="Structures/DividerSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, 3.25)
+mesh = SubResource("Mesh_divider")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Structures/DividerSouth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.5, 3.25)
+shape = SubResource("Col_divider")
+
+; ---- Props (furniture, interactive objects) ----
+[node name="Props" type="Node3D" parent="."]
+
+; Front door (south wall, living room side)
+[node name="FrontDoor" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.1, 4.4)
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/FrontDoor"]
+mesh = SubResource("Mesh_door")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/FrontDoor"]
+shape = SubResource("Col_door")
+
+; Sofa — facing north, against south wall of living room
+[node name="Sofa" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 3.2)
+
+[node name="SeatMesh" type="MeshInstance3D" parent="Props/Sofa"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.225, 0)
+mesh = SubResource("Mesh_sofa_seat")
+
+[node name="BackMesh" type="MeshInstance3D" parent="Props/Sofa"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, -0.3)
+mesh = SubResource("Mesh_sofa_back")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Sofa"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
+shape = SubResource("Col_sofa")
+
+; Coffee table in front of sofa
+[node name="CoffeeTable" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 1.8)
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/CoffeeTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.225, 0)
+mesh = SubResource("Mesh_table_coffee")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/CoffeeTable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.225, 0)
+shape = SubResource("Col_table_coffee")
+
+; Bookshelf — against west wall
+[node name="Bookshelf" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 1.1, -2)
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/Bookshelf"]
+mesh = SubResource("Mesh_bookshelf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Bookshelf"]
+shape = SubResource("Col_bookshelf")
+
+; Kitchen counter along east wall
+[node name="KitchenCounter" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -2.5)
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/KitchenCounter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("Mesh_counter")
+
+[node name="TopMesh" type="MeshInstance3D" parent="Props/KitchenCounter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925, 0)
+mesh = SubResource("Mesh_counter_top")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/KitchenCounter"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("Col_counter")
+
+; --- Readable / Collectible lore props ---
+
+; Note on the coffee table
+[node name="NoteOnTable" type="RigidBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.47, 1.85)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("6_collectible")
+prompt_text = "Read note"
+item_id = "note_neighbour_coffee_table"
+title = "Torn Notepad Page"
+text = "Dale —\n\nDon't use the back burner. It's been making that sound again.\n\nIf Margaret calls, tell her I took the car.\n\nBack soon.\n— R"
+world_flag = "found_neighbour_note"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/NoteOnTable"]
+shape = SubResource("Col_note")
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/NoteOnTable"]
+mesh = SubResource("Mesh_note")
+
+; Readable — open magazine on sofa
+[node name="Magazine" type="StaticBody3D" parent="Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0, 0.47, 3.2)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("7_readable")
+prompt_text = "Look at magazine"
+title = "Popular Mechanics — November 1996"
+body_text = "The magazine is open to an article:\n\n'WILL GPS CHANGE HOW AMERICA DRIVES?'\n\n'...civilian access is still limited, but sources suggest full constellation coverage could arrive by the turn of the century...'\n\nSomeone has circled the article title with a pen and written:\n'TOO LATE'"
+world_flag = "read_neighbour_magazine"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/Magazine"]
+shape = SubResource("Col_note")
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/Magazine"]
+mesh = SubResource("Mesh_note")
+
+; Readable — shopping list pinned to kitchen wall
+[node name="KitchenList" type="StaticBody3D" parent="Props"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 7.4, 1.6, -1.5)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("7_readable")
+prompt_text = "Read list"
+title = "Pinned to the wall"
+body_text = "- flour\n- eggs\n- candles (long ones)\n- batteries\n- that thing from the hardware store\n\n(bottom of list in different handwriting:)\nbring her home"
+world_flag = "read_kitchen_list"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Props/KitchenList"]
+shape = SubResource("Col_note")
+
+[node name="Mesh" type="MeshInstance3D" parent="Props/KitchenList"]
+mesh = SubResource("Mesh_note")
+
+; ---- Lighting ----
+[node name="Lighting" type="Node3D" parent="."]
+
+; Main ceiling lamp — living room (warm incandescent, flickering)
+[node name="LivingRoomLamp" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 2.8, 0)
+light_color = Color(1.0, 0.88, 0.68, 1)
+light_energy = 1.4
+omni_range = 11
+omni_attenuation = 1.3
+shadow_enabled = true
+
+[node name="FlickerLight" type="Node" parent="Lighting/LivingRoomLamp"]
+script = ExtResource("8_flicker")
+target_light_path = ^".."
+base_energy = 1.4
+flicker_amount = 0.10
+flicker_speed = 5.0
+mode = 2
+
+; Kitchen light — harsh fluorescent, more stable but slightly wrong colour
+[node name="KitchenLight" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2.8, 0)
+light_color = Color(0.88, 0.95, 0.82, 1)
+light_energy = 1.1
+omni_range = 8
+omni_attenuation = 1.5
+shadow_enabled = false
+
+[node name="FlickerLight" type="Node" parent="Lighting/KitchenLight"]
+script = ExtResource("8_flicker")
+target_light_path = ^".."
+base_energy = 1.1
+flicker_amount = 0.18
+flicker_speed = 14.0
+mode = 1
+
+; Window ambient bleed — cold blue-grey from outside (north wall, living room)
+[node name="WindowBleed" type="OmniLight3D" parent="Lighting"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, -4.0)
+light_color = Color(0.65, 0.72, 0.90, 1)
+light_energy = 0.35
+omni_range = 5
+omni_attenuation = 2.0
+shadow_enabled = false
+
+; ---- Audio Zones ----
+[node name="AudioZones" type="Node3D" parent="."]
+
+[node name="IndoorMix" type="Area3D" parent="AudioZones"]
+script = ExtResource("5_audio")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AudioZones/IndoorMix"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("Col_indoor_audio")
+
+; ---- Spawn Points ----
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="SpawnDefault" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, 3.5)
+script = ExtResource("3_spawn")
+
+[node name="SpawnFromFrontDoor" type="Marker3D" parent="SpawnPoints"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -3, 0.1, 3.5)
+script = ExtResource("3_spawn")
+spawn_id = "from_front_door"
+
+; ---- Triggers ----
+[node name="Triggers" type="Node3D" parent="."]
+
+; Exit through front door — back to overworld, spawn outside this house
+[node name="ExitFrontDoor" type="Area3D" parent="Triggers"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.1, 4.4)
+script = ExtResource("4_exit")
+target_scene = "res://demo/Demo.tscn"
+target_spawn_id = "from_neighbour_house"
+fade_seconds = 0.6
+require_player_group = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Triggers/ExitFrontDoor"]
+shape = SubResource("Col_exit_trigger")
+
+; ---- Player ----
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.1, 3.5)
