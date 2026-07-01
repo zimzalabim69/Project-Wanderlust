@@ -119,10 +119,14 @@ func _apply_to_mesh(mesh_instance: MeshInstance3D) -> void:
 		return
 
 	var surface_count: int = mesh.get_surface_count()
+	if surface_count <= 0:
+		return
 	for i: int in range(surface_count):
 		var existing: Material = mesh_instance.get_surface_override_material(i)
 		if existing == null:
 			existing = mesh.surface_get_material(i)
+			if existing == null:
+				continue
 
 		# Already a PS1 shader material — just refresh uniforms.
 		if existing is ShaderMaterial:

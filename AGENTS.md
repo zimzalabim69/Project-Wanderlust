@@ -1,7 +1,7 @@
 # Project-Wanderlust — Project Reference
 
 ## Stack
-- Godot 4.6 (Forward Plus renderer), GDScript (strict typing)
+- Godot 4.7 (Forward Plus renderer), GDScript (strict typing)
 - Terrain3D v1.0.2 (C++ GDExtension) for terrain
 - Agent Tools MCP addon (TCP 127.0.0.1:9920 / 9090) — AI/agent bridge
 - Save format: JSON (`user://savegame.json`)
@@ -62,3 +62,5 @@ over the MCP TCP bridge.
 - `set_deferred("monitoring", false)` required in Area3D body_entered callbacks —
   direct assignment crashes in physics signals.
 - Godot logs at `~/.local/share/godot/app_userdata/Project Wanderlust/logs/godot.log`
+- Physics engine is **Jolt Physics** (`physics/3d/physics_engine`); required for Terrain3D collision stability with Godot 4.7.
+- Terrain3D height queries go through `terrain.data.get_height(Vector3(x, 0, z))`, not `terrain.get_height(...)`.

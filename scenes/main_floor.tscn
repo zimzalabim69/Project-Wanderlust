@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://main_floor_wl01"]
+[gd_scene load_steps=23 format=3 uid="uid://main_floor_wl01"]
 
 [ext_resource type="Script" path="res://core/components/level_root.gd" id="1_level"]
 [ext_resource type="PackedScene" uid="uid://b2r8x4k6y8j1p" path="res://scenes/player.tscn" id="5_player"]
@@ -247,7 +247,7 @@ require_player_group = true
 shape = SubResource("BoxShape3D_exit")
 
 [node name="ExitFrontDoor" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -4.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -4.5)
 script = ExtResource("3_exit")
 target_scene = "res://demo/Demo.tscn"
 target_spawn_id = "from_front_door"
@@ -258,7 +258,7 @@ require_player_group = true
 shape = SubResource("BoxShape3D_exit")
 
 [node name="ExitBackDoor" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.1, 4.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 1.1, 4.5)
 script = ExtResource("3_exit")
 target_scene = "res://demo/Demo.tscn"
 target_spawn_id = "from_back_door"

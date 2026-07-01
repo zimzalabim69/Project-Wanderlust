@@ -123,6 +123,7 @@ transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 320.0, 105.0, 460.0)
 data_directory = "res://demo/data"
 material = SubResource("Terrain3DMaterial_jrc01")
 assets = ExtResource("8_g2of2")
+collision_layer = 1
 collision_mask = 3
 top_level = true
 

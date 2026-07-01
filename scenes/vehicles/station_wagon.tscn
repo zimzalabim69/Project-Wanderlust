@@ -1,8 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://station_wagon_wl01"]
+[gd_scene load_steps=27 format=3 uid="uid://station_wagon_wl01"]
 
 ; The station wagon — recurring anchor object throughout Project Wanderlust.
 ; 1987-era American wagon. Brown/tan two-tone. Snow on roof and hood.
 ; Headlights OFF (abandoned). Interior dark. Driver door slightly ajar.
+
+[ext_resource type="Script" path="res://core/components/collectible.gd" id="1_collectible"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_body"]
 albedo_color = Color(0.48, 0.36, 0.24, 1)
@@ -145,9 +147,19 @@ material = SubResource("Mat_snow")
 ; --- Scene tree ---
 
 [node name="StationWagon" type="Node3D"]
+script = ExtResource("1_collectible")
+prompt_text = "Search station wagon"
+item_id = "note_wagon_receipt"
+title = "Gas Station Receipt"
+text = "GOLDEN VALLEY GAS & STOP\nGolden, Colorado\n\nDec 14, 1996  4:12 PM\n\nReg Unleaded 12.4 gal   $16.77\nCoffee (lg)              $0.75\n\nTotal                   $17.52\nCash                    $20.00\nChange                   $2.48\n\nTHANK YOU - DRIVE SAFE"
+icon = ""
+world_flag = "found_wagon_receipt"
+destroy_on_pickup = false
+one_shot = true
 
 ; -- Main collision body (invisible) --
 [node name="Collision" type="StaticBody3D" parent="."]
+collision_layer = 3
 
 [node name="BodyShape" type="CollisionShape3D" parent="Collision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)

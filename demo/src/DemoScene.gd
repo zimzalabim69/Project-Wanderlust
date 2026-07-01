@@ -54,7 +54,10 @@ func _snap_spawn_points_to_terrain() -> void:
 			continue
 		var marker: Marker3D = child as Marker3D
 		var pos: Vector3 = marker.global_position
-		var terrain_y: float = terrain.get_height(Vector2(pos.x, pos.z))
+		var terrain_data: Object = terrain.get("data")
+		var terrain_y: float = -9999.0
+		if terrain_data != null and terrain_data.has_method("get_height"):
+			terrain_y = terrain_data.call("get_height", Vector3(pos.x, 0.0, pos.z))
 		if terrain_y > -9999.0:  # Terrain3D returns -INF for out-of-bounds.
 			marker.global_position = Vector3(pos.x, terrain_y + SPAWN_Y_OFFSET, pos.z)
 

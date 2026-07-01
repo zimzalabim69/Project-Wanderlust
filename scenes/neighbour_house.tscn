@@ -456,7 +456,7 @@ shadow_enabled = true
 
 [node name="FlickerLight" type="Node" parent="Lighting/LivingRoomLamp"]
 script = ExtResource("8_flicker")
-target_light_path = ^".."
+target_light_path = NodePath("..")
 base_energy = 1.4
 flicker_amount = 0.10
 flicker_speed = 5.0
@@ -473,7 +473,7 @@ shadow_enabled = false
 
 [node name="FlickerLight" type="Node" parent="Lighting/KitchenLight"]
 script = ExtResource("8_flicker")
-target_light_path = ^".."
+target_light_path = NodePath("..")
 base_energy = 1.1
 flicker_amount = 0.18
 flicker_speed = 14.0

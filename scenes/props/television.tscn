@@ -102,7 +102,7 @@ shadow_enabled = false
 ; FlickerLight component — makes the screen glow pulse with the static
 [node name="FlickerLight" type="Node" parent="."]
 script = ExtResource("2_flicker")
-target_light_path = ^"../ScreenGlow"
+target_light_path = NodePath("../ScreenGlow")
 base_energy = 0.55
 flicker_amount = 0.22
 flicker_speed = 12.0
