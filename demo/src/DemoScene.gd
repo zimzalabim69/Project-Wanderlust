@@ -33,13 +33,21 @@ func _ready() -> void:
 	# Capture the intended spawn id before SpawnManager consumes it.
 	var pending_spawn_id: String = GameState.pending_spawn_id
 
-	# Terrain3D needs one physics frame to initialise its collision before we
-	# can call get_height(), so defer spawn snapping.
+	# Force Full/Game collision mode (3) so the entire terrain has collision
+	# from startup. Dynamic mode only generates collision around the camera and
+	# can miss the player's spawn area, causing fall-through.
+	if terrain != null:
+		terrain.collision_mode = 3  # Terrain3DCollision.FULL_GAME
+
+	# Terrain3D needs a couple of physics frames to initialise its data and
+	# build collision. Wait before placing the player.
+	await get_tree().physics_frame
 	await get_tree().physics_frame
 	_snap_spawn_points_to_terrain()
 	_attach_snow_to_player()
 	_tag_terrain_surface()
 	_place_player_at_spawn(pending_spawn_id)
+	_add_safety_floor()
 
 
 ## Reads each SpawnPoint's XZ position, queries Terrain3D for the actual height,
@@ -129,3 +137,21 @@ func _place_player_at_spawn(spawn_id: String) -> void:
 	if target != null:
 		player.global_position = target.global_position
 		player.global_rotation.y = target.global_rotation.y
+
+
+## Adds a large invisible floor under the spawn area as a safety net. If
+## Terrain3D's collision hasn't fully initialised when the player spawns,
+## this prevents them from falling through the world.
+func _add_safety_floor() -> void:
+	var floor_body: StaticBody3D = StaticBody3D.new()
+	floor_body.name = "SafetyFloor"
+	floor_body.collision_layer = 1
+	floor_body.collision_mask = 1
+	var col: CollisionShape3D = CollisionShape3D.new()
+	var shape: BoxShape3D = BoxShape3D.new()
+	# 2000x2000 area centered on spawn, 0.5 thick at y=-0.25 (top at y=0)
+	shape.size = Vector3(2000.0, 0.5, 2000.0)
+	col.shape = shape
+	floor_body.add_child(col)
+	floor_body.global_position = Vector3(960.0, -0.25, -1988.0)
+	add_child(floor_body)
