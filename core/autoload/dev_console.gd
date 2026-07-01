@@ -169,6 +169,8 @@ func _register_default_commands() -> void:
 	register_command("load_layout", _cmd_load_layout, "Load editor layout. Usage: load_layout [name]")
 	register_command("reset", _cmd_reset, "Reset game state and inventory.")
 	register_command("quit", _cmd_quit, "Quit the game.")
+	register_command("ps1snap", _cmd_ps1snap, "Set PS1 vertex snap amount. Usage: ps1snap <0.005-2.0>  default=0.05")
+	register_command("ps1affine", _cmd_ps1affine, "Set PS1 affine warp strength. Usage: ps1affine <0.0-1.0>  default=0.85")
 
 
 func _cmd_help(_args: Array[String]) -> String:
@@ -428,3 +430,19 @@ func _cmd_reset(_args: Array[String]) -> String:
 func _cmd_quit(_args: Array[String]) -> String:
 	get_tree().quit()
 	return ""
+
+
+func _cmd_ps1snap(args: Array[String]) -> String:
+	if args.is_empty():
+		return "Current snap_amount: %.4f  (Usage: ps1snap <value>)" % PS1Renderer.snap_amount
+	var val: float = float(args[0])
+	PS1Renderer.set_snap(val)
+	return "PS1 vertex snap set to %.4f" % PS1Renderer.snap_amount
+
+
+func _cmd_ps1affine(args: Array[String]) -> String:
+	if args.is_empty():
+		return "Current affine_strength: %.2f  (Usage: ps1affine <value>)" % PS1Renderer.affine_strength
+	var val: float = float(args[0])
+	PS1Renderer.set_affine(val)
+	return "PS1 affine warp set to %.2f" % PS1Renderer.affine_strength

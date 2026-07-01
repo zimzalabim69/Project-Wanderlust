@@ -1,11 +1,17 @@
 extends Node
-## Ambient playback and outdoor/indoor mix (snow-dampened low-pass on Ambience bus).
+## Ambient playback, music playback, and outdoor/indoor mix
+## (snow-dampened low-pass on Ambience bus).
 
 const AMBIENCE_BUS_NAME: String = "Ambience"
+const MUSIC_BUS_NAME: String = "Music"
 const LOWPASS_CUTOFF_INDOOR: float = 20500.0
 const LOWPASS_CUTOFF_OUTDOOR: float = 800.0
 
+# Crossfade duration in seconds for music transitions.
+const MUSIC_FADE_TIME: float = 1.5
+
 var _ambient_player: AudioStreamPlayer
+var _music_player: AudioStreamPlayer
 var _lowpass: AudioEffectLowPassFilter
 var _outdoor_mix_enabled: bool = false
 
@@ -15,7 +21,52 @@ func _ready() -> void:
 	_ambient_player.name = "AmbientPlayer"
 	add_child(_ambient_player)
 	_ambient_player.bus = AMBIENCE_BUS_NAME
+
+	_music_player = AudioStreamPlayer.new()
+	_music_player.name = "MusicPlayer"
+	add_child(_music_player)
+	_music_player.bus = MUSIC_BUS_NAME
+
 	_setup_lowpass()
+
+
+## Music playback with crossfade. Calling with null stops music gracefully.
+func play_music(stream: AudioStream, restart: bool = false) -> void:
+	if stream == null:
+		_fade_out_music()
+		return
+	if _music_player.stream == stream and _music_player.playing and not restart:
+		return
+	# Crossfade: tween current player to silence, swap track, tween back in.
+	_crossfade_music(stream)
+
+
+func stop_music() -> void:
+	_fade_out_music()
+
+
+func _crossfade_music(new_stream: AudioStream) -> void:
+	var tween: Tween = create_tween()
+	tween.set_parallel(false)
+	# Fade out if already playing.
+	if _music_player.playing:
+		tween.tween_property(_music_player, "volume_db", -80.0, MUSIC_FADE_TIME * 0.5)
+	# Swap stream and fade in.
+	tween.tween_callback(func() -> void:
+		_music_player.stop()
+		_music_player.stream = new_stream
+		_music_player.volume_db = -80.0
+		_music_player.play()
+	)
+	tween.tween_property(_music_player, "volume_db", 0.0, MUSIC_FADE_TIME * 0.5)
+
+
+func _fade_out_music() -> void:
+	if not _music_player.playing:
+		return
+	var tween: Tween = create_tween()
+	tween.tween_property(_music_player, "volume_db", -80.0, MUSIC_FADE_TIME)
+	tween.tween_callback(_music_player.stop)
 
 
 func play_ambient(stream: AudioStream, restart: bool = true) -> void:

@@ -33,6 +33,8 @@ func _apply_level_config() -> void:
 		return
 	if level_config.ambient_loop:
 		AudioManager.play_ambient(level_config.ambient_loop, false)
+	# Wire up the music loop (was defined in LevelConfig but never called).
+	AudioManager.play_music(level_config.music_loop, false)
 	AudioManager.set_outdoor_mix(level_config.use_outdoor_mix)
 
 

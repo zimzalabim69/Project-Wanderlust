@@ -1,13 +1,13 @@
 extends Area3D
 ## Doorways and level transitions. Uses fade + spawn id from GameState.
+##
+## Double-fire prevention: monitoring is disabled the instant the trigger fires.
+## The SceneTransition autoload also has its own _busy guard as a second layer.
 
 @export_file("*.tscn") var target_scene: String = "res://scenes/town.tscn"
 @export var target_spawn_id: String = "default"
 @export var fade_seconds: float = 0.6
 @export var require_player_group: bool = true
-
-var _triggered: bool = false
-const TRIGGER_TIMEOUT: float = 2.0
 
 
 func _ready() -> void:
@@ -19,15 +19,10 @@ func _ready() -> void:
 
 
 func _on_body_entered(body: Node3D) -> void:
-	print("SceneExit: body entered: ", body.name, " group=player: ", body.is_in_group("player"))
-	if _triggered:
-		print("SceneExit: already triggered, ignoring.")
+	if not monitoring:
 		return
 	if require_player_group and not body.is_in_group("player"):
-		print("SceneExit: body not in player group, ignoring.")
 		return
-	print("SceneExit: transitioning to ", target_scene)
-	_triggered = true
+	# Disable immediately — any further overlaps this frame are ignored.
+	monitoring = false
 	SceneTransition.change_scene(target_scene, target_spawn_id, fade_seconds)
-	await get_tree().create_timer(TRIGGER_TIMEOUT).timeout
-	_triggered = false
