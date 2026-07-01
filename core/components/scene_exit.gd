@@ -23,6 +23,6 @@ func _on_body_entered(body: Node3D) -> void:
 		return
 	if require_player_group and not body.is_in_group("player"):
 		return
-	# Disable immediately — any further overlaps this frame are ignored.
-	monitoring = false
+	# Disable via set_deferred — direct assignment is blocked inside physics signals.
+	set_deferred("monitoring", false)
 	SceneTransition.change_scene(target_scene, target_spawn_id, fade_seconds)

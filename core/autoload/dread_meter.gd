@@ -46,7 +46,8 @@ func _process(delta: float) -> void:
 		_poll_timer = POLL_INTERVAL
 		_player = get_tree().get_first_node_in_group("player") as Node3D
 
-	if _player == null:
+	if _player == null or not is_instance_valid(_player) or not _player.is_inside_tree():
+		_player = null
 		return
 
 	var outdoor: bool = AudioManager.is_outdoor_mix_enabled()
