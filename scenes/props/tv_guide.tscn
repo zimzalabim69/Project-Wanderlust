@@ -9,7 +9,7 @@ metallic = 0.0
 texture_filter = 0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
-size = Vector3(0.16, 0.02, 0.22)
+size = Vector3(0.3, 0.3, 0.4)
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 size = Vector3(0.16, 0.02, 0.22)
