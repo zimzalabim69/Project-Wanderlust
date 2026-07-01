@@ -1,0 +1,279 @@
+[gd_scene load_steps=18 format=3 uid="uid://station_wagon_wl01"]
+
+; The station wagon — recurring anchor object throughout Project Wanderlust.
+; 1987-era American wagon. Brown/tan two-tone. Snow on roof and hood.
+; Headlights OFF (abandoned). Interior dark. Driver door slightly ajar.
+
+[sub_resource type="StandardMaterial3D" id="Mat_body"]
+albedo_color = Color(0.48, 0.36, 0.24, 1)
+roughness = 0.82
+metallic = 0.05
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_roof_panel"]
+albedo_color = Color(0.58, 0.48, 0.35, 1)
+roughness = 0.8
+metallic = 0.05
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_glass"]
+albedo_color = Color(0.22, 0.28, 0.32, 0.7)
+roughness = 0.1
+metallic = 0.2
+transparency = 1
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_glass_dark"]
+albedo_color = Color(0.1, 0.12, 0.14, 0.85)
+roughness = 0.12
+metallic = 0.2
+transparency = 1
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_wheel"]
+albedo_color = Color(0.12, 0.12, 0.12, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_hubcap"]
+albedo_color = Color(0.7, 0.68, 0.65, 1)
+roughness = 0.5
+metallic = 0.6
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_trim"]
+albedo_color = Color(0.55, 0.5, 0.44, 1)
+roughness = 0.6
+metallic = 0.35
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_snow"]
+albedo_color = Color(0.9, 0.93, 0.96, 1)
+roughness = 0.98
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_headlight_off"]
+albedo_color = Color(0.5, 0.48, 0.42, 1)
+roughness = 0.4
+metallic = 0.5
+texture_filter = 0
+
+; --- Meshes ---
+
+; Body (lower, darker panel)
+[sub_resource type="BoxMesh" id="Mesh_lower_body"]
+size = Vector3(4.6, 0.9, 1.8)
+material = SubResource("Mat_body")
+
+[sub_resource type="BoxShape3D" id="Col_lower_body"]
+size = Vector3(4.6, 0.9, 1.8)
+
+; Upper cabin (lighter roof panel colour)
+[sub_resource type="BoxMesh" id="Mesh_upper_body"]
+size = Vector3(3.6, 1.05, 1.72)
+material = SubResource("Mat_roof_panel")
+
+[sub_resource type="BoxShape3D" id="Col_upper_body"]
+size = Vector3(3.6, 1.05, 1.72)
+
+; Hood (sloped slightly — approximated flat)
+[sub_resource type="BoxMesh" id="Mesh_hood"]
+size = Vector3(1.2, 0.15, 1.76)
+material = SubResource("Mat_body")
+
+; Trunk / tailgate
+[sub_resource type="BoxMesh" id="Mesh_trunk"]
+size = Vector3(0.8, 0.9, 1.76)
+material = SubResource("Mat_body")
+
+; Windshield
+[sub_resource type="BoxMesh" id="Mesh_windshield"]
+size = Vector3(0.12, 0.82, 1.52)
+material = SubResource("Mat_glass")
+
+; Side windows (6 total — 3 per side)
+[sub_resource type="BoxMesh" id="Mesh_side_win"]
+size = Vector3(0.8, 0.52, 0.08)
+material = SubResource("Mat_glass_dark")
+
+; Rear window
+[sub_resource type="BoxMesh" id="Mesh_rear_win"]
+size = Vector3(0.08, 0.64, 1.42)
+material = SubResource("Mat_glass_dark")
+
+; Wheels (cylinder, 8 segments for low-poly)
+[sub_resource type="CylinderMesh" id="Mesh_wheel"]
+top_radius = 0.36
+bottom_radius = 0.36
+height = 0.22
+radial_segments = 8
+material = SubResource("Mat_wheel")
+
+[sub_resource type="CylinderShape3D" id="Col_wheel"]
+radius = 0.36
+height = 0.22
+
+; Hubcap disc
+[sub_resource type="CylinderMesh" id="Mesh_hubcap"]
+top_radius = 0.22
+bottom_radius = 0.22
+height = 0.04
+radial_segments = 8
+material = SubResource("Mat_hubcap")
+
+; Bumpers
+[sub_resource type="BoxMesh" id="Mesh_bumper"]
+size = Vector3(0.2, 0.18, 1.84)
+material = SubResource("Mat_trim")
+
+; Headlight (off — just a reflector box)
+[sub_resource type="BoxMesh" id="Mesh_headlight"]
+size = Vector3(0.12, 0.22, 0.32)
+material = SubResource("Mat_headlight_off")
+
+; Snow accumulation on roof and hood
+[sub_resource type="BoxMesh" id="Mesh_snow_roof"]
+size = Vector3(3.5, 0.12, 1.6)
+material = SubResource("Mat_snow")
+
+[sub_resource type="BoxMesh" id="Mesh_snow_hood"]
+size = Vector3(1.1, 0.1, 1.6)
+material = SubResource("Mat_snow")
+
+; --- Scene tree ---
+
+[node name="StationWagon" type="Node3D"]
+
+; -- Main collision body (invisible) --
+[node name="Collision" type="StaticBody3D" parent="."]
+
+[node name="BodyShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("Col_lower_body")
+
+[node name="CabinShape" type="CollisionShape3D" parent="Collision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.425, 0)
+shape = SubResource("Col_upper_body")
+
+; -- Visual meshes --
+[node name="LowerBody" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+mesh = SubResource("Mesh_lower_body")
+cast_shadow = 1
+
+[node name="UpperBody" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 1.425, 0)
+mesh = SubResource("Mesh_upper_body")
+cast_shadow = 1
+
+[node name="Hood" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0.93, 0)
+mesh = SubResource("Mesh_hood")
+
+[node name="Trunk" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1, 0.45, 0)
+mesh = SubResource("Mesh_trunk")
+
+; Windshield (front, slightly tilted — approximated vertical)
+[node name="Windshield" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58, 1.25, 0)
+mesh = SubResource("Mesh_windshield")
+
+[node name="RearWindow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.82, 1.25, 0)
+mesh = SubResource("Mesh_rear_win")
+
+; Side windows
+[node name="Windows" type="Node3D" parent="."]
+
+[node name="DriverFront" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 1.3, 0.9)
+mesh = SubResource("Mesh_side_win")
+
+[node name="DriverMid" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.35, 1.3, 0.9)
+mesh = SubResource("Mesh_side_win")
+
+[node name="DriverRear" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1.3, 1.3, 0.9)
+mesh = SubResource("Mesh_side_win")
+
+[node name="PassFront" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0.6, 1.3, -0.9)
+mesh = SubResource("Mesh_side_win")
+
+[node name="PassMid" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -0.35, 1.3, -0.9)
+mesh = SubResource("Mesh_side_win")
+
+[node name="PassRear" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -1.3, 1.3, -0.9)
+mesh = SubResource("Mesh_side_win")
+
+; Bumpers
+[node name="FrontBumper" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0.36, 0)
+mesh = SubResource("Mesh_bumper")
+
+[node name="RearBumper" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.36, 0)
+mesh = SubResource("Mesh_bumper")
+
+; Headlights
+[node name="HeadlightL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37, 0.72, -0.58)
+mesh = SubResource("Mesh_headlight")
+
+[node name="HeadlightR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37, 0.72, 0.58)
+mesh = SubResource("Mesh_headlight")
+
+; Wheels (rotated 90° so cylinder axis aligns with axle)
+[node name="Wheels" type="Node3D" parent="."]
+
+[node name="FrontLeft" type="MeshInstance3D" parent="Wheels"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 1.4, 0.36, 1.02)
+mesh = SubResource("Mesh_wheel")
+cast_shadow = 1
+
+[node name="HubFL" type="MeshInstance3D" parent="Wheels/FrontLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.13)
+mesh = SubResource("Mesh_hubcap")
+
+[node name="FrontRight" type="MeshInstance3D" parent="Wheels"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 1.4, 0.36, -1.02)
+mesh = SubResource("Mesh_wheel")
+cast_shadow = 1
+
+[node name="HubFR" type="MeshInstance3D" parent="Wheels/FrontRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13)
+mesh = SubResource("Mesh_hubcap")
+
+[node name="RearLeft" type="MeshInstance3D" parent="Wheels"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -1.3, 0.36, 1.02)
+mesh = SubResource("Mesh_wheel")
+cast_shadow = 1
+
+[node name="HubRL" type="MeshInstance3D" parent="Wheels/RearLeft"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.13)
+mesh = SubResource("Mesh_hubcap")
+
+[node name="RearRight" type="MeshInstance3D" parent="Wheels"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -1.3, 0.36, -1.02)
+mesh = SubResource("Mesh_wheel")
+cast_shadow = 1
+
+[node name="HubRR" type="MeshInstance3D" parent="Wheels/RearRight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13)
+mesh = SubResource("Mesh_hubcap")
+
+; Snow accumulation
+[node name="SnowOnRoof" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 1.99, 0)
+mesh = SubResource("Mesh_snow_roof")
+
+[node name="SnowOnHood" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 1.03, 0)
+mesh = SubResource("Mesh_snow_hood")

@@ -6,10 +6,14 @@ signal item_collected(item_id: String, item_data: Dictionary)
 signal item_removed(item_id: String)
 signal inventory_opened
 signal inventory_closed
+signal readable_opened(title: String, body: String)
+signal readable_closed
 
 var items: Array[Dictionary] = []
 var item_ids: Dictionary = {}
 var is_open: bool = false
+## True while a non-collected readable is being shown (wall text, sign, etc.)
+var is_reading: bool = false
 
 func collect(item_id: String, title: String, text: String, icon: String = "") -> void:
 	if item_ids.has(item_id):
@@ -78,3 +82,22 @@ func clear() -> void:
 	items.clear()
 	item_ids.clear()
 	is_open = false
+
+
+## Show a non-collected piece of text (newspaper, wall writing, sign).
+## The InventoryPanel listens to readable_opened and displays it in-place.
+## Closes automatically when the player presses the inventory or cancel key.
+func show_readable(readable_title: String, body: String) -> void:
+	if is_reading or is_open:
+		return
+	is_reading = true
+	readable_opened.emit(readable_title, body)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
+func close_readable() -> void:
+	if not is_reading:
+		return
+	is_reading = false
+	readable_closed.emit()
+	_capture_mouse_next_frame()

@@ -171,6 +171,7 @@ func _register_default_commands() -> void:
 	register_command("quit", _cmd_quit, "Quit the game.")
 	register_command("ps1snap", _cmd_ps1snap, "Set PS1 vertex snap amount. Usage: ps1snap <0.005-2.0>  default=0.05")
 	register_command("ps1affine", _cmd_ps1affine, "Set PS1 affine warp strength. Usage: ps1affine <0.0-1.0>  default=0.85")
+	register_command("crt", _cmd_crt, "Tune CRT overlay. Usage: crt <param> <value>  params: scan vignette aberration grain barrel brightness")
 
 
 func _cmd_help(_args: Array[String]) -> String:
@@ -446,3 +447,28 @@ func _cmd_ps1affine(args: Array[String]) -> String:
 	var val: float = float(args[0])
 	PS1Renderer.set_affine(val)
 	return "PS1 affine warp set to %.2f" % PS1Renderer.affine_strength
+
+
+func _cmd_crt(args: Array[String]) -> String:
+	if args.size() < 2:
+		return "Usage: crt <param> <value>\n  params: scan vignette aberration grain barrel brightness"
+	var crt_node: Node = get_node_or_null("/root/CRTOverlay/Screen")
+	if crt_node == null:
+		return "CRTOverlay not found."
+	var mat: ShaderMaterial = (crt_node as ColorRect).material as ShaderMaterial
+	if mat == null:
+		return "CRTOverlay has no ShaderMaterial."
+	var param: String = args[0].to_lower()
+	var val: float = float(args[1])
+	var uniform_map: Dictionary = {
+		"scan": "scanline_strength",
+		"vignette": "vignette_strength",
+		"aberration": "aberration_strength",
+		"grain": "grain_strength",
+		"barrel": "barrel_distortion",
+		"brightness": "brightness",
+	}
+	if not uniform_map.has(param):
+		return "Unknown CRT param '%s'. Valid: %s" % [param, ", ".join(uniform_map.keys())]
+	mat.set_shader_parameter(uniform_map[param], val)
+	return "CRT %s set to %.4f" % [param, val]

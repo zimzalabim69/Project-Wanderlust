@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://note_wagon_receipt"]
+
+[ext_resource type="Script" path="res://core/components/collectible.gd" id="1_collectible"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.18, 0.02, 0.28)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(0.18, 0.02, 0.28)
+
+; Found on the dashboard of the station wagon.
+[node name="Note" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_collectible")
+prompt_text = "Read receipt"
+item_id = "note_wagon_receipt"
+title = "Gas Station Receipt"
+text = "GOLDEN VALLEY GAS & STOP\nGolden, Colorado\n\nDec 14, 1996  4:12 PM\n\nReg Unleaded 12.4 gal   $16.77\nCoffee (lg)              $0.75\n\nTotal                   $17.52\nCash                    $20.00\nChange                   $2.48\n\nTHANK YOU - DRIVE SAFE"
+world_flag = "found_wagon_receipt"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_1")

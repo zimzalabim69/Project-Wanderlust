@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://chol2xlfbq7cu"]
+[gd_scene load_steps=22 format=3 uid="uid://chol2xlfbq7cu"]
 
 [ext_resource type="Script" uid="uid://chstoagn42gbr" path="res://demo/src/DemoScene.gd" id="1_k7qca"]
 [ext_resource type="PackedScene" uid="uid://djhl3foqkj4e2" path="res://demo/components/Tunnel.tscn" id="3_kdh0b"]
@@ -8,6 +8,10 @@
 [ext_resource type="Script" path="res://core/components/audio_zone.gd" id="6_audio_zone"]
 [ext_resource type="Script" path="res://core/components/spawn_point.gd" id="7_spawn_point"]
 [ext_resource type="Terrain3DAssets" uid="uid://dal3jhw6241qg" path="res://demo/data/assets.tres" id="8_g2of2"]
+[ext_resource type="PackedScene" path="res://scenes/structures/ranch_house.tscn" id="9_ranch"]
+[ext_resource type="PackedScene" path="res://scenes/structures/motel.tscn" id="10_motel"]
+[ext_resource type="PackedScene" path="res://scenes/structures/water_tower.tscn" id="11_tower"]
+[ext_resource type="PackedScene" path="res://scenes/vehicles/station_wagon.tscn" id="12_wagon"]
 
 [sub_resource type="Gradient" id="Gradient_vr1m7"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -203,5 +207,28 @@ lifetime = 6.0
 fixed_fps = 30
 process_material = SubResource("ParticleProcessMaterial_snow_heavy")
 draw_pass_1 = SubResource("QuadMesh_snowflake")
+
+; ---- Structures ----
+; Positioned relative to spawn centre (320, ~terrain_y, 460).
+; Y=105 is placeholder — DemoScene.gd snaps to terrain at runtime.
+; Spread across the map: house nearby, motel on the road, tower as landmark.
+
+[node name="Structures" type="Node3D" parent="."]
+
+; Ranch house — 30m north of spawn, facing south (player walks toward it)
+[node name="RanchHouse" parent="Structures" instance=ExtResource("9_ranch")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 315, 105, 420)
+
+; Motel — 80m west along the main road
+[node name="Motel" parent="Structures" instance=ExtResource("10_motel")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 240, 105, 460)
+
+; Water tower — 60m east, visible landmark
+[node name="WaterTower" parent="Structures" instance=ExtResource("11_tower")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390, 105, 445)
+
+; Station wagon — parked in front of the ranch house, slightly off-road
+[node name="StationWagon" parent="Structures" instance=ExtResource("12_wagon")]
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 308, 105, 412)
 
 

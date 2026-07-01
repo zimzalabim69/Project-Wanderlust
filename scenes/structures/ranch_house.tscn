@@ -1,0 +1,259 @@
+[gd_scene load_steps=34 format=3 uid="uid://ranch_house_wl01"]
+
+; Low-poly ranch house exterior — 1990s Colorado mountain town style.
+; Warm orange-lit windows glow from inside. Covered porch. Hip roof.
+; Replace any BoxMesh with a real GLB import by swapping the mesh= property.
+;
+; Scene tree:
+;   RanchHouse (Node3D)
+;   ├── Foundation  (walls, floors — StaticBody3D children for collision)
+;   ├── Roof
+;   ├── Porch
+;   ├── Windows     (MeshInstance3D with emissive warm-yellow material)
+;   ├── Chimney
+;   └── Lights      (OmniLight3D — warm interior bleed + porch light)
+
+; --- Materials ---
+
+[sub_resource type="StandardMaterial3D" id="Mat_siding"]
+albedo_color = Color(0.62, 0.54, 0.44, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_trim"]
+albedo_color = Color(0.88, 0.84, 0.78, 1)
+roughness = 0.85
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_roof"]
+albedo_color = Color(0.22, 0.18, 0.14, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_chimney"]
+albedo_color = Color(0.48, 0.4, 0.34, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_window"]
+albedo_color = Color(1.0, 0.72, 0.28, 1)
+roughness = 0.3
+metallic = 0.0
+emission_enabled = true
+emission = Color(1.0, 0.68, 0.22, 1)
+emission_energy_multiplier = 1.6
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_porch_floor"]
+albedo_color = Color(0.38, 0.3, 0.22, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_door"]
+albedo_color = Color(0.25, 0.2, 0.14, 1)
+roughness = 0.85
+metallic = 0.0
+texture_filter = 0
+
+; --- Meshes ---
+
+; Main body: 10×3×8m ranch house
+[sub_resource type="BoxMesh" id="Mesh_body"]
+size = Vector3(10.0, 3.0, 8.0)
+material = SubResource("Mat_siding")
+
+[sub_resource type="BoxShape3D" id="Col_body"]
+size = Vector3(10.0, 3.0, 8.0)
+
+; Hip roof (approximated as a wedge — two slabs)
+[sub_resource type="PrismMesh" id="Mesh_roof_main"]
+size = Vector3(10.4, 2.2, 8.4)
+material = SubResource("Mat_roof")
+
+; Chimney
+[sub_resource type="BoxMesh" id="Mesh_chimney"]
+size = Vector3(0.8, 3.5, 0.8)
+material = SubResource("Mat_chimney")
+
+[sub_resource type="BoxShape3D" id="Col_chimney"]
+size = Vector3(0.8, 3.5, 0.8)
+
+; Chimney cap
+[sub_resource type="BoxMesh" id="Mesh_chimney_cap"]
+size = Vector3(1.0, 0.12, 1.0)
+material = SubResource("Mat_trim")
+
+; Porch slab
+[sub_resource type="BoxMesh" id="Mesh_porch"]
+size = Vector3(4.0, 0.2, 2.2)
+material = SubResource("Mat_porch_floor")
+
+[sub_resource type="BoxShape3D" id="Col_porch"]
+size = Vector3(4.0, 0.2, 2.2)
+
+; Porch roof
+[sub_resource type="BoxMesh" id="Mesh_porch_roof"]
+size = Vector3(4.2, 0.18, 2.4)
+material = SubResource("Mat_roof")
+
+; Porch pillars
+[sub_resource type="BoxMesh" id="Mesh_pillar"]
+size = Vector3(0.2, 2.3, 0.2)
+material = SubResource("Mat_trim")
+
+; Front door
+[sub_resource type="BoxMesh" id="Mesh_door"]
+size = Vector3(0.9, 2.1, 0.12)
+material = SubResource("Mat_door")
+
+; Windows (glowing emissive)
+[sub_resource type="BoxMesh" id="Mesh_window_lg"]
+size = Vector3(1.4, 1.0, 0.1)
+material = SubResource("Mat_window")
+
+[sub_resource type="BoxMesh" id="Mesh_window_sm"]
+size = Vector3(0.8, 0.7, 0.1)
+material = SubResource("Mat_window")
+
+; Trim strips around windows
+[sub_resource type="BoxMesh" id="Mesh_win_trim_h"]
+size = Vector3(1.6, 0.12, 0.12)
+material = SubResource("Mat_trim")
+
+[sub_resource type="BoxMesh" id="Mesh_win_trim_v"]
+size = Vector3(0.12, 1.24, 0.12)
+material = SubResource("Mat_trim")
+
+; --- Scene tree ---
+
+[node name="RanchHouse" type="Node3D"]
+
+; ---- Foundation / walls ----
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("Mesh_body")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Body"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/StaticBody3D"]
+shape = SubResource("Col_body")
+
+; ---- Roof ----
+[node name="RoofMain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.1, 0)
+mesh = SubResource("Mesh_roof_main")
+cast_shadow = 1
+
+; ---- Chimney ----
+[node name="Chimney" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3.75, -2.0)
+mesh = SubResource("Mesh_chimney")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chimney"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chimney/StaticBody3D"]
+shape = SubResource("Col_chimney")
+
+[node name="ChimneyCap" type="MeshInstance3D" parent="Chimney"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81, 0)
+mesh = SubResource("Mesh_chimney_cap")
+
+; ---- Porch (front, south face) ----
+[node name="Porch" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Porch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 4.6)
+mesh = SubResource("Mesh_porch")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Porch/Floor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Porch/Floor/StaticBody3D"]
+shape = SubResource("Col_porch")
+
+[node name="Roof" type="MeshInstance3D" parent="Porch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.49, 4.6)
+mesh = SubResource("Mesh_porch_roof")
+cast_shadow = 0
+
+[node name="PillarLeft" type="MeshInstance3D" parent="Porch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 1.25, 5.6)
+mesh = SubResource("Mesh_pillar")
+
+[node name="PillarRight" type="MeshInstance3D" parent="Porch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7, 1.25, 5.6)
+mesh = SubResource("Mesh_pillar")
+
+; ---- Front door ----
+[node name="FrontDoor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 4.06)
+mesh = SubResource("Mesh_door")
+
+; ---- Windows ----
+[node name="Windows" type="Node3D" parent="."]
+
+; Front face windows (flanking door)
+[node name="FrontLeft" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 1.65, 4.01)
+mesh = SubResource("Mesh_window_lg")
+
+[node name="FrontRight" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 1.65, 4.01)
+mesh = SubResource("Mesh_window_lg")
+
+; Side windows (west)
+[node name="WestFront" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.01, 1.65, 1.5)
+mesh = SubResource("Mesh_window_sm")
+
+[node name="WestBack" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.01, 1.65, -1.5)
+mesh = SubResource("Mesh_window_sm")
+
+; Back window
+[node name="BackCenter" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, -4.01)
+mesh = SubResource("Mesh_window_lg")
+
+; Window trim — front left
+[node name="TrimFL_Top" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 2.22, 4.0)
+mesh = SubResource("Mesh_win_trim_h")
+
+[node name="TrimFL_Bot" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 1.08, 4.0)
+mesh = SubResource("Mesh_win_trim_h")
+
+[node name="TrimFL_Left" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.56, 1.65, 4.0)
+mesh = SubResource("Mesh_win_trim_v")
+
+[node name="TrimFL_Right" type="MeshInstance3D" parent="Windows"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.04, 1.65, 4.0)
+mesh = SubResource("Mesh_win_trim_v")
+
+; ---- Lights ----
+[node name="Lights" type="Node3D" parent="."]
+
+; Interior warm light bleeding through windows
+[node name="InteriorBleed" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+light_color = Color(1.0, 0.72, 0.3, 1)
+light_energy = 0.8
+omni_range = 7.0
+shadow_enabled = false
+
+; Porch light
+[node name="PorchLight" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.4, 4.8)
+light_color = Color(1.0, 0.85, 0.55, 1)
+light_energy = 1.2
+omni_range = 5.5
+shadow_enabled = true

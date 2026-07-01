@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://crt_overlay_wanderlust"]
+
+[ext_resource type="Shader" path="res://assets/shaders/crt.gdshader" id="1_crtshader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("1_crtshader")
+shader_parameter/scanline_strength = 0.18
+shader_parameter/scanline_count = 240.0
+shader_parameter/vignette_strength = 0.55
+shader_parameter/vignette_power = 2.0
+shader_parameter/aberration_strength = 0.004
+shader_parameter/grain_strength = 0.04
+shader_parameter/barrel_distortion = 0.02
+shader_parameter/brightness = 1.05
+shader_parameter/time_offset = 0.0
+
+[node name="CRTOverlay" type="CanvasLayer"]
+layer = 99
+
+[node name="Screen" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_crt")
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2

@@ -1,0 +1,137 @@
+[gd_scene load_steps=10 format=3 uid="uid://water_tower_wl01"]
+
+; Low-poly water tower — iconic Colorado mountain town landmark.
+; Tall wooden tank on six legs. Visible from far across the overworld.
+; Scale: ~14m tall total.
+
+[sub_resource type="StandardMaterial3D" id="Mat_tank"]
+albedo_color = Color(0.35, 0.28, 0.20, 1)
+roughness = 0.95
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_legs"]
+albedo_color = Color(0.28, 0.22, 0.16, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_band"]
+albedo_color = Color(0.5, 0.42, 0.32, 1)
+roughness = 0.85
+metallic = 0.15
+texture_filter = 0
+
+; Tank body (cylinder approximated as 8-sided prism)
+[sub_resource type="CylinderMesh" id="Mesh_tank"]
+top_radius = 3.0
+bottom_radius = 3.0
+height = 5.0
+radial_segments = 8
+material = SubResource("Mat_tank")
+
+[sub_resource type="CylinderShape3D" id="Col_tank"]
+radius = 3.0
+height = 5.0
+
+; Conical roof
+[sub_resource type="CylinderMesh" id="Mesh_cone"]
+top_radius = 0.1
+bottom_radius = 3.2
+height = 2.0
+radial_segments = 8
+material = SubResource("Mat_legs")
+
+; Leg struts (four diagonal box legs)
+[sub_resource type="BoxMesh" id="Mesh_leg"]
+size = Vector3(0.28, 9.0, 0.28)
+material = SubResource("Mat_legs")
+
+[sub_resource type="BoxShape3D" id="Col_leg"]
+size = Vector3(0.28, 9.0, 0.28)
+
+; Horizontal cross-brace ring
+[sub_resource type="BoxMesh" id="Mesh_brace"]
+size = Vector3(4.8, 0.18, 0.2)
+material = SubResource("Mat_band")
+
+; Metal band around tank
+[sub_resource type="CylinderMesh" id="Mesh_band"]
+top_radius = 3.08
+bottom_radius = 3.08
+height = 0.18
+radial_segments = 8
+material = SubResource("Mat_band")
+
+; --- Scene tree ---
+
+[node name="WaterTower" type="Node3D"]
+
+; Tank
+[node name="Tank" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.5, 0)
+mesh = SubResource("Mesh_tank")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Tank"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tank/StaticBody3D"]
+shape = SubResource("Col_tank")
+
+; Cone roof
+[node name="Roof" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.0, 0)
+mesh = SubResource("Mesh_cone")
+cast_shadow = 1
+
+; Metal bands (3 evenly spaced)
+[node name="BandTop" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 13.2, 0)
+mesh = SubResource("Mesh_band")
+
+[node name="BandMid" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.5, 0)
+mesh = SubResource("Mesh_band")
+
+[node name="BandBot" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.8, 0)
+mesh = SubResource("Mesh_band")
+
+; Legs (4 legs, tilted inward)
+[node name="Legs" type="Node3D" parent="."]
+
+[node name="LegNE" type="MeshInstance3D" parent="Legs"]
+transform = Transform3D(0.98, 0.14, -0.14, -0.1, 0.98, 0.18, 0.15, -0.16, 0.98, 2.0, 4.5, -2.0)
+mesh = SubResource("Mesh_leg")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Legs/LegNE"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Legs/LegNE/StaticBody3D"]
+shape = SubResource("Col_leg")
+
+[node name="LegNW" type="MeshInstance3D" parent="Legs"]
+transform = Transform3D(0.98, 0.14, 0.14, -0.1, 0.98, -0.18, -0.15, 0.16, 0.98, -2.0, 4.5, -2.0)
+mesh = SubResource("Mesh_leg")
+cast_shadow = 1
+
+[node name="LegSE" type="MeshInstance3D" parent="Legs"]
+transform = Transform3D(0.98, -0.14, -0.14, 0.1, 0.98, 0.18, 0.15, -0.16, 0.98, 2.0, 4.5, 2.0)
+mesh = SubResource("Mesh_leg")
+cast_shadow = 1
+
+[node name="LegSW" type="MeshInstance3D" parent="Legs"]
+transform = Transform3D(0.98, -0.14, 0.14, 0.1, 0.98, -0.18, -0.15, 0.16, 0.98, -2.0, 4.5, 2.0)
+mesh = SubResource("Mesh_leg")
+cast_shadow = 1
+
+; Cross-braces between legs
+[node name="Braces" type="Node3D" parent="."]
+
+[node name="BraceNS" type="MeshInstance3D" parent="Braces"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 0, 6.0, 0)
+mesh = SubResource("Mesh_brace")
+
+[node name="BraceEW" type="MeshInstance3D" parent="Braces"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.0, 0)
+mesh = SubResource("Mesh_brace")

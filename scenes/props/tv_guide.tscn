@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://tv_guide_wl01"]
+
+[ext_resource type="Script" path="res://core/components/readable.gd" id="1_readable"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_cover"]
+albedo_color = Color(0.7, 0.15, 0.1, 1)
+roughness = 0.8
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(0.16, 0.02, 0.22)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(0.16, 0.02, 0.22)
+material = SubResource("Mat_cover")
+
+[node name="TVGuide" type="StaticBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_readable")
+prompt_text = "Look at TV Guide"
+title = "TV Guide — Week of December 9-15, 1996"
+body_text = "SATURDAY DEC 14\n\n6:00 PM   CBS Evening News\n6:30 PM   Wheel of Fortune\n7:00 PM   Dr. Quinn, Medicine Woman\n8:00 PM   Touched by an Angel\n9:00 PM   Early Edition\n\n---\nThe page is open to Saturday the 14th.\nSomeone has circled 'Early Edition' in pen.\nBelow it, in the same pen: 'gone by then.'"
+world_flag = "read_tv_guide"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_1")

@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Project Wanderlust"
 run/main_scene="res://scenes/ui/title_screen.tscn"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [audio]
@@ -26,6 +26,7 @@ SpawnManager="*res://core/autoload/spawn_manager.gd"
 SceneTransition="*res://core/autoload/scene_transition.tscn"
 AudioManager="*res://core/autoload/audio_manager.gd"
 PS1Renderer="*res://core/autoload/ps1_renderer.gd"
+CRTOverlay="*res://ui/crt_overlay.tscn"
 InventoryManager="*res://core/autoload/inventory_manager.gd"
 McpInteractionServer="*res://core/autoload/mcp_interaction_server.gd"
 InventoryPanel="*res://ui/inventory_panel.tscn"
