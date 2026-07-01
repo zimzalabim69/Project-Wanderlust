@@ -7,9 +7,9 @@ extends Interactable
 ## Text is displayed via InventoryPanel in "read" mode.
 ## Press E / Tab / Esc to dismiss.
 
+@export var title: String = ""
 @export_multiline var body_text: String = ""
 @export var world_flag: String = ""
-@export var show_title: bool = true
 
 
 func _on_interact(_player: Node3D) -> void:
