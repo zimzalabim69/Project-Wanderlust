@@ -20,14 +20,21 @@ var is_open: bool:
 
 var _commands: Dictionary = {}
 
+## True only in debug / editor builds. Some commands are blocked in release.
+var _is_debug: bool = false
+
 func _ready() -> void:
+	_is_debug = OS.is_debug_build()
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	layer = 95
 	_default_height = _panel.size.y
 	_panel.visible = false
 	_cmd_input.text_submitted.connect(_on_text_submitted)
 	_register_default_commands()
-	log_msg("DevConsole ready. Type 'help' for commands.")
+	if _is_debug:
+		log_msg("DevConsole ready. Type 'help' for commands.")
+	else:
+		log_msg("DevConsole ready. (Release build — some commands disabled.)")
 
 
 func _input(event: InputEvent) -> void:
@@ -221,6 +228,9 @@ func _cmd_pos(_args: Array[String]) -> String:
 
 
 func _cmd_scene(args: Array[String]) -> String:
+	# SECURITY: arbitrary scene loading disabled in release builds.
+	if not _is_debug:
+		return "Error: 'scene' command disabled in release build."
 	if args.is_empty():
 		return "Usage: scene <scene_path>"
 	var path: String = args[0]

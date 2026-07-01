@@ -10,10 +10,22 @@ const LOWPASS_CUTOFF_OUTDOOR: float = 800.0
 # Crossfade duration in seconds for music transitions.
 const MUSIC_FADE_TIME: float = 1.5
 
+# Layered tension music: calm layer plays always; tension layer fades in as
+# dread rises. Both use the Music bus. When a LevelConfig provides a
+# music_loop it replaces the calm layer (tension layer is cleared).
+const TENSION_BLEND_SPEED: float = 0.8   # dB/sec approach rate
+
 var _ambient_player: AudioStreamPlayer
-var _music_player: AudioStreamPlayer
+var _music_player: AudioStreamPlayer       # calm / base layer
+var _tension_player: AudioStreamPlayer     # tension overlay layer
 var _lowpass: AudioEffectLowPassFilter
 var _outdoor_mix_enabled: bool = false
+
+# Current dread level [0..1] — set by DreadMeter autoload each frame.
+var _dread: float = 0.0
+# Target volume_db for tension layer at full dread.
+const TENSION_MAX_DB: float = 0.0
+const TENSION_MIN_DB: float = -80.0
 
 
 func _ready() -> void:
@@ -27,7 +39,40 @@ func _ready() -> void:
 	add_child(_music_player)
 	_music_player.bus = MUSIC_BUS_NAME
 
+	_tension_player = AudioStreamPlayer.new()
+	_tension_player.name = "TensionPlayer"
+	add_child(_tension_player)
+	_tension_player.bus = MUSIC_BUS_NAME
+	_tension_player.volume_db = TENSION_MIN_DB
+
 	_setup_lowpass()
+
+
+func _process(delta: float) -> void:
+	# Smoothly blend tension layer volume toward target.
+	if _tension_player.stream != null and _tension_player.playing:
+		var target_db: float = lerpf(TENSION_MIN_DB, TENSION_MAX_DB, _dread)
+		_tension_player.volume_db = move_toward(
+			_tension_player.volume_db, target_db, TENSION_BLEND_SPEED * delta * 60.0
+		)
+
+
+## Set the tension layer stream (looping stinger / drone).
+## Starts playing immediately at volume corresponding to current dread.
+func set_tension_stream(stream: AudioStream) -> void:
+	if stream == null:
+		_tension_player.stop()
+		return
+	if _tension_player.stream == stream:
+		return
+	_tension_player.stream = stream
+	_tension_player.volume_db = lerpf(TENSION_MIN_DB, TENSION_MAX_DB, _dread)
+	_tension_player.play()
+
+
+## Called every frame by DreadMeter. dread in [0..1].
+func set_dread(dread: float) -> void:
+	_dread = clampf(dread, 0.0, 1.0)
 
 
 ## Music playback with crossfade. Calling with null stops music gracefully.

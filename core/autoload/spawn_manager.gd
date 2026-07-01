@@ -63,6 +63,9 @@ func _place_player() -> void:
 
 	GameState.pending_spawn_id = "default"
 
+	# Notify DreadMeter of the new safe position.
+	DreadMeter.register_safe_position(player.global_position)
+
 func _find_spawn(scene: Node, spawn_id: String) -> Node3D:
 	var spawn_points: Node = scene.get_node_or_null("SpawnPoints")
 	if spawn_points == null:

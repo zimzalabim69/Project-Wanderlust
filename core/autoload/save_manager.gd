@@ -1,9 +1,19 @@
 extends Node
 ## Handles saving and loading game state to user://savegame.json.
+##
+## In release builds the save file is AES-encrypted via Godot's built-in
+## FileAccess.open_encrypted_with_pass(). Debug builds write plain JSON
+## so you can inspect/edit saves during development.
 
 const SAVE_PATH: String = "user://savegame.json"
 const SAVE_VERSION: int = 1
 const MAIN_SCENE: String = "res://scenes/basement.tscn"
+
+# Encryption passphrase. Not a true secret (it's in the binary), but it
+# prevents trivial editing of the save file in release builds.
+# Change this if you want a different key — just bump SAVE_VERSION too
+# so old saves are rejected gracefully rather than corrupted on load.
+const _SAVE_KEY: String = "wndrlst_sv_k3y_1994"
 
 const _AUDIO_BUS_MAP: Dictionary = {
 	"master": "Master",
@@ -55,12 +65,15 @@ func save_game() -> void:
 		"audio": audio_data,
 	}
 
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var json_string: String = JSON.stringify(save_data, "\t")
+	var file: FileAccess
+	if OS.is_debug_build():
+		file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	else:
+		file = FileAccess.open_encrypted_with_pass(SAVE_PATH, FileAccess.WRITE, _SAVE_KEY)
 	if file == null:
 		push_error("SaveManager: failed to open save file for writing. Error: %s" % error_string(FileAccess.get_open_error()))
 		return
-
-	var json_string: String = JSON.stringify(save_data, "\t")
 	file.store_string(json_string)
 	file.close()
 
@@ -70,7 +83,11 @@ func load_game() -> void:
 		push_warning("SaveManager: no save file found to load.")
 		return
 
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var file: FileAccess
+	if OS.is_debug_build():
+		file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	else:
+		file = FileAccess.open_encrypted_with_pass(SAVE_PATH, FileAccess.READ, _SAVE_KEY)
 	if file == null:
 		push_error("SaveManager: failed to open save file for reading. Error: %s" % error_string(FileAccess.get_open_error()))
 		return

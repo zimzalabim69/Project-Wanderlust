@@ -15,6 +15,13 @@ var _key_map: Dictionary
 var _held_keys: Dictionary = {}
 
 func _ready() -> void:
+	# SECURITY: only run the TCP server in debug builds.
+	# In a production export this node still exists but does nothing.
+	if not OS.is_debug_build():
+		set_process(false)
+		push_warning("McpInteractionServer: disabled in release build.")
+		return
+
 	# Ensure MCP server keeps processing even when game is paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_init_key_map()

@@ -1,0 +1,124 @@
+[gd_scene load_steps=12 format=3 uid="uid://television_wl01"]
+
+[ext_resource type="Script" path="res://core/components/readable.gd" id="1_readable"]
+[ext_resource type="Script" path="res://core/components/flicker_light.gd" id="2_flicker"]
+[ext_resource type="Shader" path="res://assets/shaders/tv_static.gdshader" id="3_tvshader"]
+
+; --- Materials ---
+
+[sub_resource type="StandardMaterial3D" id="Mat_casing"]
+albedo_color = Color(0.12, 0.11, 0.10, 1)
+roughness = 0.75
+metallic = 0.05
+texture_filter = 0
+
+[sub_resource type="StandardMaterial3D" id="Mat_bezel"]
+albedo_color = Color(0.18, 0.16, 0.14, 1)
+roughness = 0.7
+metallic = 0.0
+texture_filter = 0
+
+[sub_resource type="ShaderMaterial" id="Mat_screen"]
+shader = ExtResource("3_tvshader")
+shader_parameter/signal_quality = 0.0
+shader_parameter/static_brightness = 0.9
+shader_parameter/scan_speed = 0.8
+shader_parameter/scan_band_width = 0.12
+shader_parameter/scan_band_brightness = 1.4
+shader_parameter/hold_jitter = 0.018
+shader_parameter/phosphor_color = Vector3(0.88, 0.96, 0.80)
+shader_parameter/screen_brightness = 0.85
+shader_parameter/vignette_strength = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_speaker"]
+albedo_color = Color(0.25, 0.22, 0.18, 1)
+roughness = 0.9
+metallic = 0.0
+texture_filter = 0
+
+; --- Meshes ---
+
+; Main TV casing (CRT boxy shape)
+[sub_resource type="BoxMesh" id="Mesh_casing"]
+size = Vector3(0.75, 0.65, 0.58)
+material = SubResource("Mat_casing")
+
+[sub_resource type="BoxShape3D" id="Col_casing"]
+size = Vector3(0.75, 0.65, 0.58)
+
+; Screen bezel (slightly smaller box, inset on front face)
+[sub_resource type="BoxMesh" id="Mesh_bezel"]
+size = Vector3(0.58, 0.48, 0.04)
+material = SubResource("Mat_bezel")
+
+; Screen face (the static shader quad — slightly inside the bezel)
+[sub_resource type="QuadMesh" id="Mesh_screen"]
+size = Vector2(0.5, 0.4)
+material = SubResource("Mat_screen")
+
+; Speaker grille strip
+[sub_resource type="BoxMesh" id="Mesh_speaker"]
+size = Vector3(0.16, 0.38, 0.04)
+material = SubResource("Mat_speaker")
+
+; --- Scene tree ---
+
+[node name="Television" type="Node3D"]
+
+; Main body with collision
+[node name="Casing" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("Mesh_casing")
+cast_shadow = 1
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Casing"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Casing/StaticBody3D"]
+shape = SubResource("Col_casing")
+
+; Bezel
+[node name="Bezel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.04, 0.29)
+mesh = SubResource("Mesh_bezel")
+
+; Screen (TV static shader)
+[node name="Screen" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.04, 0.30)
+mesh = SubResource("Mesh_screen")
+
+; Speaker grille
+[node name="Speaker" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22, 0.0, 0.29)
+mesh = SubResource("Mesh_speaker")
+
+; Screen phosphor glow light (green-tinged, flickers with the static)
+[node name="ScreenGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.04, 0.52)
+light_color = Color(0.75, 0.9, 0.65, 1)
+light_energy = 0.55
+omni_range = 3.5
+shadow_enabled = false
+
+; FlickerLight component — makes the screen glow pulse with the static
+[node name="FlickerLight" type="Node" parent="."]
+script = ExtResource("2_flicker")
+target_light_path = ^"../ScreenGlow"
+base_energy = 0.55
+flicker_amount = 0.22
+flicker_speed = 12.0
+mode = 1
+
+; Readable interaction — examining the TV
+[node name="InteractArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea"]
+shape = SubResource("Col_casing")
+
+[node name="TVInteractable" type="Node" parent="."]
+script = ExtResource("1_readable")
+prompt_text = "Look at TV"
+title = "Television"
+body_text = "The television is on.\nThe screen shows nothing but static.\nThe volume is turned all the way up, but it's completely silent.\n\nThe power light is red."
+world_flag = "looked_at_tv"
