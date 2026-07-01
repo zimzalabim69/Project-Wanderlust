@@ -40,8 +40,6 @@ func _ready() -> void:
 	_attach_snow_to_player()
 	_tag_terrain_surface()
 	_place_player_at_spawn(pending_spawn_id)
-	_ensure_terrain_camera()
-	_ensure_terrain_collision_target()
 
 
 ## Reads each SpawnPoint's XZ position, queries Terrain3D for the actual height,
@@ -131,30 +129,3 @@ func _place_player_at_spawn(spawn_id: String) -> void:
 	if target != null:
 		player.global_position = target.global_position
 		player.global_rotation.y = target.global_rotation.y
-
-
-## Ensure Terrain3D tracks the player's camera so dynamic collision is generated
-## around the player. Without this, Terrain3D can fail to find the active camera and
-## stop generating collision, causing the player to fall through the ground.
-func _ensure_terrain_camera() -> void:
-	if terrain == null:
-		return
-	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
-	if player == null:
-		return
-	var camera: Camera3D = player.find_child("Camera3D") as Camera3D
-	if camera == null:
-		camera = get_viewport().get_camera_3d()
-	if camera != null and terrain.has_method("set_camera"):
-		terrain.call("set_camera", camera)
-
-
-## Make Terrain3D center its dynamic collision around the player so the ground
-## collider exists wherever the player is standing/walking.
-func _ensure_terrain_collision_target() -> void:
-	if terrain == null:
-		return
-	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
-	if player == null:
-		return
-	terrain.set("collision_target", player)
