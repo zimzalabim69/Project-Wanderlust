@@ -117,7 +117,7 @@ script = ExtResource("1_k7qca")
 [node name="Tunnel" parent="." instance=ExtResource("3_kdh0b")]
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 320.0, 105.0, 460.0)
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 960.0, 1.2, -1988.0)
 
 [node name="Terrain3D" type="Terrain3D" parent="."]
 data_directory = "res://demo/data"
@@ -132,33 +132,33 @@ top_level = true
 [node name="SpawnPoints" type="Node3D" parent="."]
 
 [node name="SpawnDefault" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 105, 460)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 960, 1.2, -1988)
 script = ExtResource("7_spawn_point")
 
 [node name="SpawnFromBasement" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 320, 105, 448)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 960, 1.2, -2000)
 script = ExtResource("7_spawn_point")
 spawn_id = "from_basement"
 
 [node name="SpawnFromFrontDoor" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280, 105, 400)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 920, 1.2, -2048)
 script = ExtResource("7_spawn_point")
 spawn_id = "from_front_door"
 
 [node name="SpawnFromBackDoor" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 360, 105, 520)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 1000, 1.2, -1928)
 script = ExtResource("7_spawn_point")
 spawn_id = "from_back_door"
 
 [node name="SpawnFromNeighbourHouse" type="Marker3D" parent="SpawnPoints"]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 275, 105, 480)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 915, 1.2, -1968)
 script = ExtResource("7_spawn_point")
 spawn_id = "from_neighbour_house"
 
 [node name="Triggers" type="Node3D" parent="."]
 
 [node name="ExitToBasement" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 105, 430)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 960, 1.2, -2018)
 script = ExtResource("5_scene_exit")
 target_scene = "res://scenes/basement.tscn"
 target_spawn_id = "from_town"
@@ -169,7 +169,7 @@ require_player_group = true
 shape = SubResource("BoxShape3D_exit")
 
 [node name="EnterFrontDoor" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 280, 105, 405)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 920, 1.2, -2043)
 script = ExtResource("5_scene_exit")
 target_scene = "res://scenes/main_floor.tscn"
 target_spawn_id = "from_front_door"
@@ -180,7 +180,7 @@ require_player_group = true
 shape = SubResource("BoxShape3D_exit")
 
 [node name="EnterBackDoor" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 360, 105, 515)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, 1.2, -1933)
 script = ExtResource("5_scene_exit")
 target_scene = "res://scenes/main_floor.tscn"
 target_spawn_id = "from_back_door"
@@ -192,7 +192,7 @@ shape = SubResource("BoxShape3D_exit")
 
 ; Neighbour's house entrance — small bungalow 45m west of spawn
 [node name="EnterNeighbourHouse" type="Area3D" parent="Triggers"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 275, 105, 476)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 915, 1.2, -1972)
 script = ExtResource("5_scene_exit")
 target_scene = "res://scenes/neighbour_house.tscn"
 target_spawn_id = "from_front_door"
@@ -205,6 +205,7 @@ shape = SubResource("BoxShape3D_exit")
 [node name="AudioZones" type="Node3D" parent="."]
 
 [node name="OutdoorMix" type="Area3D" parent="AudioZones"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 960, 0, -1988)
 script = ExtResource("6_audio_zone")
 outdoor_mix = true
 
@@ -212,7 +213,7 @@ outdoor_mix = true
 shape = SubResource("BoxShape3D_audio")
 
 [node name="Snowfall" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 120, 450)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 960, 120, -1988)
 amount = 5000
 lifetime = 8.0
 fixed_fps = 30
@@ -220,7 +221,7 @@ process_material = SubResource("ParticleProcessMaterial_snow")
 draw_pass_1 = SubResource("QuadMesh_snowflake")
 
 [node name="Snowfall2" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 320, 120, 450)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 960, 120, -1988)
 amount = 3000
 lifetime = 6.0
 fixed_fps = 30
@@ -228,31 +229,30 @@ process_material = SubResource("ParticleProcessMaterial_snow_heavy")
 draw_pass_1 = SubResource("QuadMesh_snowflake")
 
 ; ---- Structures ----
-; Positioned relative to spawn centre (320, ~terrain_y, 460).
-; Y=105 is placeholder — DemoScene.gd snaps to terrain at runtime.
-; Spread across the map: house nearby, motel on the road, tower as landmark.
+; Clustered on the flat southern terrain at the far end of the map.
+; Spawn centre is now (960, ~terrain_y, -1988); Y=0 places the building base on the ground.
 
 [node name="Structures" type="Node3D" parent="."]
 
 ; Ranch house — 30m north of spawn, facing south (player walks toward it)
 [node name="RanchHouse" parent="Structures" instance=ExtResource("9_ranch")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 315, 105, 420)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 955, 0, -2028)
 
 ; Motel — 80m west along the main road
 [node name="Motel" parent="Structures" instance=ExtResource("10_motel")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 240, 105, 460)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 880, 0, -1988)
 
 ; Water tower — 60m east, visible landmark
 [node name="WaterTower" parent="Structures" instance=ExtResource("11_tower")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 390, 105, 445)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1030, 0, -2003)
 
 ; Station wagon — parked in front of the ranch house, slightly off-road
 [node name="StationWagon" parent="Structures" instance=ExtResource("12_wagon")]
-transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 308, 105, 412)
+transform = Transform3D(0.866, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866, 948, 0, -2036)
 
 ; Neighbour's house exterior — 45m west of spawn, enterable
 ; Uses the ranch_house mesh as exterior shell; interior is a separate scene.
 [node name="NeighbourHouseExterior" parent="Structures" instance=ExtResource("9_ranch")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 275, 105, 460)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 915, 0, -1988)
 
 

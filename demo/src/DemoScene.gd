@@ -30,12 +30,16 @@ func _ready() -> void:
 				sky3d.enable_editor_time = false
 		return  # Don't run runtime logic in editor.
 
+	# Capture the intended spawn id before SpawnManager consumes it.
+	var pending_spawn_id: String = GameState.pending_spawn_id
+
 	# Terrain3D needs one physics frame to initialise its collision before we
 	# can call get_height(), so defer spawn snapping.
 	await get_tree().physics_frame
 	_snap_spawn_points_to_terrain()
 	_attach_snow_to_player()
 	_tag_terrain_surface()
+	_place_player_at_spawn(pending_spawn_id)
 
 
 ## Reads each SpawnPoint's XZ position, queries Terrain3D for the actual height,
@@ -96,4 +100,32 @@ func _attach_snow_to_player() -> void:
 		# Keep snow centred above and around the player, not offset to world origin.
 		snow.position = Vector3(0.0, 15.0, 0.0)
 
-		
+
+## After snapping spawn points, move the player to the snapped spawn so the
+## player never starts at the placeholder Y (the SpawnManager runs before the
+## terrain snap and would place the player at the unsnapped height otherwise).
+func _place_player_at_spawn(spawn_id: String) -> void:
+	var player: Node3D = get_tree().get_first_node_in_group("player") as Node3D
+	if player == null:
+		return
+
+	var spawn_points: Node = get_node_or_null("SpawnPoints")
+	if spawn_points == null:
+		return
+
+	var target: Node3D = null
+	for child: Node in spawn_points.get_children():
+		if child is SpawnPoint and (child as SpawnPoint).spawn_id == spawn_id:
+			target = child as Node3D
+			break
+
+	# Fallback to default if the requested id is missing.
+	if target == null:
+		for child: Node in spawn_points.get_children():
+			if child is SpawnPoint and (child as SpawnPoint).spawn_id == "default":
+				target = child as Node3D
+				break
+
+	if target != null:
+		player.global_position = target.global_position
+		player.global_rotation.y = target.global_rotation.y
